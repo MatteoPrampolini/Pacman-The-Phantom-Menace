@@ -12,16 +12,18 @@ window= None
 
 class CrackManGame(arcade.View):
 
-
-	def __init__(self,window):
+	def __init__(self, window):
 		super().__init__()
 		#self.tick=0
 		#self.fps=-1;
-		self.crackman= None
-		self.window=window
+		self.crackman = None
+		self.window = window
 		arcade.set_background_color(arcade.color.EERIE_BLACK)
+
 		# If you have sprite lists, you should create them here,
 		# and set them to None
+		self.player_list = None
+		self.player = None
 
 
 
@@ -34,6 +36,8 @@ class CrackManGame(arcade.View):
 		#self.tick=self.tick+1
 		self.fps= round(1/delta_time)
 		#print(self.fps)
+
+
 		pass
 
 	
@@ -52,6 +56,8 @@ class CrackManGame(arcade.View):
 		self.crackman.draw()
 		# Call draw() on all your sprite lists below
 
+
+
 	def on_key_release(self, key, key_modifiers):
 		"""
 		Called whenever the user lets off a previously pressed key.
@@ -69,14 +75,30 @@ class CrackManGame(arcade.View):
 	def setup(self):
 		""" Set up the game variables. Call to re-start the game. """
 		# Create your sprites and sprite lists here
-		self.crackman = arcade.Sprite(PATH+'\\assets\crackman.png', 0.5)
-		width,height= self.window.get_size()
-		self.crackman.center_x = width/2
-		self.crackman.center_y = height/2
+		#commento un attimo sta parte per testing, credo non sia troppo utile
+		#self.crackman = arcade.Sprite(PATH+'\\assets\crackman.png', 0.5)
+		#width,height= self.window.get_size()
+		#self.crackman.center_x = width/2
+		#self.crackman.center_y = height/2
+
+		#parte tek
+
+		self.player_list = arcade.SpriteList()
+		self.player = arcade.AnimatedTimeSprite()
+		self.player.textures = []
+
+		for i in range(3):
+			self.player.textures.append(arcade.load_texture("sprites/sprites.png", x=900, y=i*45, width=45, height=45))
+
+		width, height = self.window.get_size()
+		self.player.center_x = width // 2
+		self.player.center_y = height // 2
+
+		self.player_list.append(self.player)
 
 #il menu del gioco
 
-	
+
 
 	
 		

@@ -8,38 +8,211 @@ window3= None
 gridRows=31 
 gridCols=28
 debug=0
+movspeed = 5
 
 #nel gioco di default prime 3 e ultime 2 rows sono vuote.
-class GameView(arcade.View):		
-	def __init__(self,window):
+
+
+class GameView(arcade.View):
+	def __init__(self, window):
+		"""
+		Initializer
+		"""
+
 		super().__init__()
-		self.ui_manager = UIManager() #buttons, text e simili
-		self.sprites = arcade.SpriteList() #le sprite
+		# buttons, text e simili
+		self.ui_manager = UIManager()
+		# le sprite
+		self.sprites = arcade.SpriteList()
+		# lista che contiene i player
+		self.player_list = None
+		# proprietà P1
+		self.player1 = None
+		# proprietà P2
+		self.player2 = None
+
+		# Track the current state of what key is pressed
+		self.left_pressed = False
+		self.right_pressed = False
+		self.up_pressed = False
+		self.down_pressed = False
+
+
+		# inizializzazione griglia
 		self.grid = []
 		for row in range(gridRows):
 			self.grid.append([])
 			for column in range(gridCols):
 				self.grid[row].append(1)
-		#print(self.grid)
-		#print(self.grid[0][0])
+		# print(self.grid)
+		# print(self.grid[0][0])
 		self.resetGrid()
-		self.fps=-1;
-		#self.
+		self.fps = -1
 		global window3
-		window3=self.window
-		#sprites
+		window3 = self.window
+		# sprites
 		self.setup()
-	
+
+	def setup(self):
+
+		self.ui_manager.purge_ui_elements()
+		width,height= self.window.get_size()
+		menuBtn = MenuBTN(
+			'Menu',
+			center_x= width-100,
+			center_y= height-30,
+			width=150,
+			height=30
+		)
+		self.ui_manager.add_ui_element(menuBtn)
+
+		debugBtn = DebugBTN(
+			'Debug',
+			center_x= width-100,
+			center_y= height/2+50,
+			width=100,
+			height=30
+		)
+		self.ui_manager.add_ui_element(debugBtn)
+
+		self.sprites.append(arcade.Sprite(startGame.PATH+'/assets/map.png', scale=1.0, center_x=width/2, center_y=height/2))
+
+		#tek
+		# TODO: devo capire come trovare la posizione precisa in cui mettere il fantasmino
+		# TODO: fare la roba per il movimento (dove può andare)
+		# TODO: aggiustare la dimensione delle sprite e la movspeed del player
+		self.player_list = arcade.SpriteList()
+		self.player1 = arcade.AnimatedWalkingSprite()
+		self.player2 = arcade.AnimatedWalkingSprite()
+
+		# setup texture player 1
+		self.player1.stand_right_textures = []
+		self.player1.walk_right_textures = []
+		for i in range(2):
+			self.player1.stand_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=i * 49, width=49, height=49))
+			self.player1.walk_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=i * 49, width=49, height=49))
+
+		self.player1.stand_left_textures = []
+		self.player1.walk_left_textures = []
+		for i in range(2):
+			self.player1.stand_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=202 + (i * 49), width=49, height=49))
+			self.player1.walk_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=202 + (i * 49), width=49, height=49))
+
+		self.player1.walk_up_textures = []
+		for i in range(2):
+			self.player1.walk_up_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=300 + (i * 49), width=49, height=49))
+
+		self.player1.walk_down_textures = []
+		for i in range(2):
+			self.player1.walk_down_textures.append(
+				arcade.load_texture("assets/sprites.png", x=0, y=101 + (i * 49), width=49, height=49))
+
+		# setup texture player 2
+		self.player2.stand_right_textures = []
+		self.player2.walk_right_textures = []
+		for i in range(2):
+			self.player2.stand_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=i * 49, width=49, height=49))
+			self.player2.walk_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=i * 49, width=49, height=49))
+
+		self.player2.stand_left_textures = []
+		self.player2.walk_left_textures = []
+		for i in range(2):
+			self.player2.stand_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=202 + (i * 49), width=49, height=49))
+			self.player2.walk_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=202 + (i * 49), width=49, height=49))
+
+		self.player2.walk_up_textures = []
+		for i in range(2):
+			self.player2.walk_up_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=300 + (i * 49), width=49, height=49))
+
+		self.player2.walk_down_textures = []
+		for i in range(2):
+			self.player2.walk_down_textures.append(
+				arcade.load_texture("assets/sprites.png", x=99, y=101 + (i * 49), width=49, height=49))
+
+
+		self.player1.center_x = width/2
+		self.player1.center_y = height/2
+
+		self.player2.center_x = width / 2
+		self.player2.center_y = height / 2
+
+		self.player_list.append(self.player1)
+		self.player_list.append(self.player2)
+
+
 	def on_hide_view(self):
 		self.ui_manager.unregister_handlers()
-			
-		
+
+	def on_draw(self):
+		arcade.start_render()
+		self.sprites.draw()
+		if debug:
+			self.drawGrid()
+		width, height = self.window.get_size()
+
+		arcade.draw_text("fps: " + str(self.fps), 10, height - 30, arcade.color.WHITE, 15)
+		arcade.draw_text("SESSOLONE", 100, height - 30, arcade.color.WHITE, 15)
+
+		self.player_list.draw()
+
 	def on_update(self, delta_time):
-		self.fps= round(1/delta_time)
+		self.fps = round(1/delta_time)
+
+		# gestione movimento P1
+		# Calculate speed based on the keys pressed
+		self.player1.change_x = 0
+		self.player1.change_y = 0
+		if self.up_pressed and not self.down_pressed:
+			self.player1.change_y = movspeed
+		elif self.down_pressed and not self.up_pressed:
+			self.player1.change_y = -movspeed
+		if self.left_pressed and not self.right_pressed:
+			self.player1.change_x = -movspeed
+		elif self.right_pressed and not self.left_pressed:
+			self.player1.change_x = movspeed
+
+		# Call update to move the sprite
+		self.player_list.update()
+		self.player_list.update_animation()
+
+	def on_key_press(self, key, modifiers):
+		"""Called whenever a key is pressed. """
+
+		# movimento player 1 semplice
+		#if key == arcade.key.UP:
+		#	self.player1.change_y = movspeed
+		#if key == arcade.key.DOWN:
+		#	self.player1.change_y = -movspeed
+		#if key == arcade.key.LEFT:
+		#	self.player1.change_x = -movspeed
+		#if key == arcade.key.RIGHT:
+		#	self.player1.change_x = movspeed
+
+		# movimento player 1 più migliore
+		if key == arcade.key.UP:
+			self.up_pressed = True
+		elif key == arcade.key.DOWN:
+			self.down_pressed = True
+		elif key == arcade.key.LEFT:
+			self.left_pressed = True
+		elif key == arcade.key.RIGHT:
+			self.right_pressed = True
+
 	def on_key_release(self, key, key_modifiers):
-		#print(key, key_modifiers)
-		#toggle fullscreen
-		
+		"""Called when the user releases a key. """
+		# print(key, key_modifiers)
+
+		# toggle fullscreen
 		if (key == 102 and key_modifiers == 2) or (key == 102 and key_modifiers == 10):
 			#print(self.window.get_size())
 			oldWidth, oldHeight=self.window.get_size()
@@ -62,41 +235,25 @@ class GameView(arcade.View):
 			for sprite in self.sprites:
 				sprite.center_x = sprite.center_x * (width/oldWidth)
 				sprite.center_y = sprite.center_y * (height/oldHeight)
-		
-	def on_draw(self):
-		
-		arcade.start_render()
-		self.sprites.draw()
-		if debug:
-			self.drawGrid()
-		width,height= self.window.get_size()
-		
-		arcade.draw_text("fps: "+str(self.fps),10,height-30,arcade.color.WHITE,15)
-		arcade.draw_text("NAPOLI",100,height-30,arcade.color.WHITE,15)
-	def setup(self):
-		
-		self.ui_manager.purge_ui_elements()
-		width,height= self.window.get_size()
-		menuBtn = MenuBTN(
-			'Menu',
-			center_x= width-100,
-			center_y= height-30,
-			width=150,
-			height=30
-		)
-		self.ui_manager.add_ui_element(menuBtn)
-		debugBtn = DebugBTN(
-			'Debug',
-			center_x= width-100,
-			center_y= height/2+50,
-			width=100,
-			height=30
-		)
-		self.ui_manager.add_ui_element(debugBtn)
-		self.sprites.append(arcade.Sprite(startGame.PATH+'/assets/map.png', scale=1.0, center_x=width/2, center_y=height/2))
-		#self.sprites.append(arcade.Sprite(startGame.PATH+'/assets/map.png', scale=1.0, center_x=width/2, center_y=height/2))
+
+		# stop movimento player 1 semplice
+		#if key == arcade.key.UP or key == arcade.key.DOWN:
+		#	self.player1.change_y = 0
+		#elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+		#	self.player1.change_x = 0
+
+		# stop player 1 migliore
+		if key == arcade.key.UP:
+			self.up_pressed = False
+		elif key == arcade.key.DOWN:
+			self.down_pressed = False
+		elif key == arcade.key.LEFT:
+			self.left_pressed = False
+		elif key == arcade.key.RIGHT:
+			self.right_pressed = False
+
 	def drawGrid(self):
-		width,height= self.window.get_size()
+		width,height = self.window.get_size()
 		OFFSETY= height/2 -256
 		OFFSETX= width/2 -(448/2)
 		MARGIN=0
@@ -120,7 +277,7 @@ class GameView(arcade.View):
 					# Draw the box
 				arcade.draw_rectangle_filled(x, y, cellW, cellW, colors[self.grid[row][column]])
 	def resetGrid(self):
-		#gridRows=31 
+		#gridRows=31
 		#gridCols=28
 		#GRID VALUES: 0=empty path,1=coin path,2=wall,3=invalid
 		#la griglia va dal basso verso l'alto
