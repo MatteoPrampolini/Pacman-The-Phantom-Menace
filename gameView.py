@@ -30,12 +30,20 @@ class GameView(arcade.View):
 		self.player1 = None
 		# proprietà P2
 		self.player2 = None
+		# proprietà pacman
+		self.pacman = None
 
 		# Track the current state of what key is pressed
+		#P1
 		self.left_pressed = False
 		self.right_pressed = False
 		self.up_pressed = False
 		self.down_pressed = False
+		#P2
+		self.a_pressed = False
+		self.d_pressed = False
+		self.w_pressed = False
+		self.s_pressed = False
 
 
 		# inizializzazione griglia
@@ -84,6 +92,7 @@ class GameView(arcade.View):
 		self.player_list = arcade.SpriteList()
 		self.player1 = arcade.AnimatedWalkingSprite()
 		self.player2 = arcade.AnimatedWalkingSprite()
+		self.pacman = arcade.AnimatedWalkingSprite()
 
 		# setup texture player 1
 		self.player1.stand_right_textures = []
@@ -139,6 +148,32 @@ class GameView(arcade.View):
 			self.player2.walk_down_textures.append(
 				arcade.load_texture("assets/sprites.png", x=99, y=101 + (i * 49), width=49, height=49))
 
+		# setup texture pacman
+		self.pacman.stand_right_textures = []
+		self.pacman.walk_right_textures = []
+		for i in range(3):
+			self.pacman.stand_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=i * 49, width=49, height=49))
+			self.pacman.walk_right_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=i * 49, width=49, height=49))
+
+		self.pacman.stand_left_textures = []
+		self.pacman.walk_left_textures = []
+		for i in range(3):
+			self.pacman.stand_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=302 + (i * 49), width=49, height=49))
+			self.pacman.walk_left_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=302 + (i * 49), width=49, height=49))
+
+		self.pacman.walk_up_textures = []
+		for i in range(3):
+			self.pacman.walk_up_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=450 + (i * 49), width=49, height=49))
+
+		self.pacman.walk_down_textures = []
+		for i in range(3):
+			self.pacman.walk_down_textures.append(
+				arcade.load_texture("assets/sprites.png", x=850, y=150 + (i * 49), width=49, height=49))
 
 		self.player1.center_x = width/2
 		self.player1.center_y = height/2
@@ -146,8 +181,12 @@ class GameView(arcade.View):
 		self.player2.center_x = width / 2
 		self.player2.center_y = height / 2
 
+		self.pacman.center_x = width / 2
+		self.pacman.center_y = height / 2
+
 		self.player_list.append(self.player1)
 		self.player_list.append(self.player2)
+		self.player_list.append(self.pacman)
 
 
 	def on_hide_view(self):
@@ -181,6 +220,17 @@ class GameView(arcade.View):
 		elif self.right_pressed and not self.left_pressed:
 			self.player1.change_x = movspeed
 
+		self.player2.change_x = 0
+		self.player2.change_y = 0
+		if self.w_pressed and not self.s_pressed:
+			self.player2.change_y = movspeed
+		elif self.s_pressed and not self.w_pressed:
+			self.player2.change_y = -movspeed
+		if self.a_pressed and not self.d_pressed:
+			self.player2.change_x = -movspeed
+		elif self.d_pressed and not self.a_pressed:
+			self.player2.change_x = movspeed
+
 		# Call update to move the sprite
 		self.player_list.update()
 		self.player_list.update_animation()
@@ -198,7 +248,7 @@ class GameView(arcade.View):
 		#if key == arcade.key.RIGHT:
 		#	self.player1.change_x = movspeed
 
-		# movimento player 1 più migliore
+		# movimento player 1 migliore
 		if key == arcade.key.UP:
 			self.up_pressed = True
 		elif key == arcade.key.DOWN:
@@ -207,6 +257,15 @@ class GameView(arcade.View):
 			self.left_pressed = True
 		elif key == arcade.key.RIGHT:
 			self.right_pressed = True
+		# movimento player 2
+		if key == arcade.key.W:
+			self.w_pressed = True
+		elif key == arcade.key.S:
+			self.s_pressed = True
+		elif key == arcade.key.A:
+			self.a_pressed = True
+		elif key == arcade.key.D:
+			self.d_pressed = True
 
 	def on_key_release(self, key, key_modifiers):
 		"""Called when the user releases a key. """
@@ -217,7 +276,7 @@ class GameView(arcade.View):
 			#print(self.window.get_size())
 			oldWidth, oldHeight=self.window.get_size()
 			self.window.set_fullscreen(not self.window.fullscreen)
-			width, height= self.window.get_size()
+			width, height = self.window.get_size()
 			#print(self.window.get_size())
 			for elem in self.ui_manager._ui_elements:
 				#elem.center_x = width/2
@@ -251,6 +310,15 @@ class GameView(arcade.View):
 			self.left_pressed = False
 		elif key == arcade.key.RIGHT:
 			self.right_pressed = False
+		# stop player 2
+		if key == arcade.key.W:
+			self.w_pressed = False
+		elif key == arcade.key.S:
+			self.s_pressed = False
+		elif key == arcade.key.A:
+			self.a_pressed = False
+		elif key == arcade.key.D:
+			self.d_pressed = False
 
 	def drawGrid(self):
 		width,height = self.window.get_size()
