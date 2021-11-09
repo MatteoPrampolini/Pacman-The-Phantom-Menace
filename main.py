@@ -106,7 +106,7 @@ def check_for_events(game):
 			if event.type == pygame.KEYUP: #keyup è meglio di keydown se vuoi premere il tasto una volta sola
 				if event.key == pygame.K_p: #if P is pressed, toggle pause
 					game.is_running=not game.is_running
-				if event.key == pygame.K_m: #if P is pressed, toggle pause
+				if event.key == pygame.K_m: #if M is pressed, toggle pause
 					game.debug=not game.debug
 if __name__ == "__main__":
 	main()

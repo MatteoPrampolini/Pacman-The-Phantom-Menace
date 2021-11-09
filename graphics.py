@@ -53,7 +53,7 @@ class PacGraphic:
 		self.WIN.fill((0, 0, 0))
 		self.WIN.blit(self.MAP, (0, 0))
 		if debug:
-			self.draw_grid(self.grid)
+			self.draw_grid()
 		self.WIN.blit(self.RED_IMAGE, (self.red.x, self.red.y))
 		self.WIN.blit(self.PAC_IMAGE, (self.pac.x, self.pac.y))
 		self.draw_coins()
