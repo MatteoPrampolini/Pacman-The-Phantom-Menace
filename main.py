@@ -1,3 +1,4 @@
+import time
 import pygame
 import os
 import sys
@@ -19,7 +20,6 @@ class ENTITIES(Enum):
 pygame.font.init()	# text init
 pygame.mixer.init()	 # sound init
 
-
 WIDTH, HEIGHT = 448, 576
 pygame.display.set_caption("Pacman")
 
@@ -35,19 +35,26 @@ class Game():
 		self.graphics = gp.PacGraphic(w,h) #questa classe gestisce tutto cio' che e' grafico.
 		#initialize entities
 		self.entities = list()
-		pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),x=int(WIDTH/2),y=int(HEIGHT/2)-70,name="pacman")
+		#pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),x=int(WIDTH/2),y=int(HEIGHT/2)-70,name="pacman")
+		pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),name="pacman")
+		x,y=self.graphics.grid_to_window(row=22,col=13)
+		pacman.default_x=x
+		pacman.default_y=y+6
+		pacman.set_rect(pacman.default_x,pacman.default_y,26,26)
 		self.entities.append(pacman)
-		red=RedGhost(os.path.join('Assets', 'red-tmp.png'),x=int(WIDTH/2),y=int(HEIGHT/2)-25,name="blinky")
+		red=RedGhost(os.path.join('Assets', 'red-tmp.png'),name="blinky")
+		x,y=self.graphics.grid_to_window(row=10,col=13)
+		red.default_x=x
+		red.default_y=y+6
+		red.set_rect(red.default_x,red.default_y,26,26)
 		self.entities.append(red)
-		
-		self.graphics.get_entities(self.entities) #graphic will show the entities for us, but we have to send pass them
+		self.graphics.get_entities(self.entities)
 		self.reset()
 		
 	def reset(self):
-		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2], [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2], [2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2], [2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2], [2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2], [2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2], [2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2], [2,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,2], [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2], [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2], [2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2], [2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2], [3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3], [3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3], [3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3], [2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2], [0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0], [2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2], [3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3], [3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3], [3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3], [2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2], [2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2], [2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2], [2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2], [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2], [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2], [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2], [2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2], [2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2], [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
-		self.grid=self.grid[::-1] #devo flipparlo perché non ho lo sbatti di invertire l'ordine delle righe
+		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
 		self.graphics.reset()
-		self.graphics.set_grid(self.grid)
+		self.graphics.get_grid(self.grid)
 		self.debug=False
 		self.is_running=True
 		self.is_game_over=False
@@ -82,19 +89,37 @@ class Game():
 			if self.can_move(Actions.DOWN,entity):
 				rect.y += VEL
 		if entity.name=="pacman":
-			x,y=entity.coords_to_matrix()
+			x,y=entity.window_to_grid()
 			if self.grid[y][x]==1:
 				self.grid[y][x]=0
 
+	#wx,wy mi servono per allineare bene le sprites alla griglia, perché le collisioni della grid sono spartane
 	def can_move(self,action,entity):
-		x,y=entity.coords_to_matrix()
+		x,y=entity.window_to_grid()
 		if action == Actions.UP and self.grid[y-1,x]==2:
+			wx,wy=self.graphics.grid_to_window(y+1,x)
+			y=entity.rect.y+entity.rect.height
+			if y > wy :
+				return True
 			return False
 		if action == Actions.DOWN and self.grid[y+1,x]==2:
+			wx,wy=self.graphics.grid_to_window(y+1,x)
+			y=entity.rect.y+entity.rect.height
+			if y < wy :
+				return True
 			return False
+
 		if action == Actions.LEFT and self.grid[y,x-1]==2:
+			wx,wy=self.graphics.grid_to_window(y,x-1)
+			x=entity.rect.x-entity.rect.width/2
+			if x > wx :
+				return True
 			return False
 		if action == Actions.RIGHT and self.grid[y,x+1]==2:
+			wx,wy=self.graphics.grid_to_window(y,x+1)
+			x=entity.rect.x+entity.rect.width
+			if x < wx :
+				return True
 			return False
 		return True
 		
@@ -113,7 +138,6 @@ def main():
 		for entity in game.entities:
 			game.handle_entity_movement(entity,keys_pressed)
 		game.graphics.draw_window(game.debug)
-
 		if game.is_game_over:
 			game.reset()
 def check_for_events(game):
@@ -124,7 +148,7 @@ def check_for_events(game):
 			if event.type == pygame.KEYUP: #keyup è meglio di keydown se vuoi premere il tasto una volta sola
 				if event.key == pygame.K_p: #if P is pressed, toggle pause
 					game.is_running=not game.is_running
-				if event.key == pygame.K_m: #if M is pressed, toggle pause
+				if event.key == pygame.K_m: #if M is pressed, toggle debug
 					game.debug=not game.debug
 if __name__ == "__main__":
 	main()

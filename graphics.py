@@ -17,7 +17,8 @@ BLACK = (0,0,0)
 GREEN =(50, 168, 86)
 YELLOW= (255,215,0)
 COIN= (224, 209, 209)
-
+#ENTITY_OFFSET_X=5
+from main import ENTITIES
 class PacGraphic:
 	
 	def __init__(self,WIDTH,HEIGHT):
@@ -25,13 +26,12 @@ class PacGraphic:
 		self.h=HEIGHT
 		self.WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 		self.MAP = pygame.image.load(os.path.join('Assets', 'map.png'))
-		
 		self.entities=None
 		self.grid = None
 	def reset(self):
 		for entity in self.entities:
 			entity.reset_position()
-	def set_grid(self,grid):
+	def get_grid(self,grid):
 		self.grid=grid
 	
 	def get_entities(self,entities):
@@ -46,6 +46,11 @@ class PacGraphic:
 				tmp.x=OFFSET_X+column*CELL_DIM
 				pygame.draw.rect(self.WIN,COLORS[self.grid[row][column]],tmp)
 	
+	def grid_to_window(self,row,col): 
+		
+		x=col*CELL_DIM+OFFSET_X
+		y=row*CELL_DIM+OFFSET_Y
+		return x,y
 	
 	def draw_entities(self):
 		for entity in self.entities:
@@ -56,6 +61,8 @@ class PacGraphic:
 		self.WIN.blit(self.MAP, (0, 0))
 		if debug:
 			self.draw_grid()
+			for entity in self.entities:
+				pygame.draw.rect(self.WIN,GREEN,entity.rect)
 		
 		self.draw_coins()
 		self.draw_entities()
