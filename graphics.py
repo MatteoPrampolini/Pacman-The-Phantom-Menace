@@ -15,9 +15,9 @@ RED = (200,0,0)
 BLUE = (0, 0, 255)
 BLACK = (0,0,0)
 GREEN =(50, 168, 86)
-YELLOW= (255,215,0)
+GOLD= (255,215,0)
 COIN= (224, 209, 209)
-#ENTITY_OFFSET_X=5
+YELLOW = (255,241,0)
 from main import ENTITIES
 class PacGraphic:
 	
@@ -28,7 +28,10 @@ class PacGraphic:
 		self.MAP = pygame.image.load(os.path.join('Assets', 'map.png'))
 		self.entities=None
 		self.grid = None
+		self.font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),25)
+		self.timer=0
 	def reset(self):
+		self.timer= 0
 		for entity in self.entities:
 			entity.reset_position()
 	def get_grid(self,grid):
@@ -36,10 +39,14 @@ class PacGraphic:
 	
 	def get_entities(self,entities):
 		self.entities=entities
-		
+	
+	def update_time(self,time):
+		self.timer=time
+	
+
 	def draw_grid(self): #per il debug, non viene chiamata nella versione finale
 		tmp = pygame.Rect(0,0, CELL_DIM, CELL_DIM)
-		COLORS=[WHITE,YELLOW,BLUE,BLACK]
+		COLORS=[WHITE,GOLD,BLUE,BLACK]
 		for row in range(GRID_ROWS):
 			for column in range(GRID_COLS):
 				tmp.y=OFFSET_Y+row*CELL_DIM			
@@ -49,14 +56,13 @@ class PacGraphic:
 	def grid_to_window(self,row,col): 
 		
 		x=col*CELL_DIM+OFFSET_X
-		y=row*CELL_DIM+OFFSET_Y
+		y=row*CELL_DIM#+OFFSET_Y
 		return x,y
 	
 	def draw_entities(self):
 		for entity in self.entities:
 			self.WIN.blit(entity.IMAGE, (entity.rect.x,entity.rect.y))
 	def draw_window(self,debug):
-
 		self.WIN.fill((0, 0, 0))
 		self.WIN.blit(self.MAP, (0, 0))
 		if debug:
@@ -66,6 +72,8 @@ class PacGraphic:
 		
 		self.draw_coins()
 		self.draw_entities()
+		self.draw_text()
+		#print(self.timer)
 		pygame.display.update()
 	
 	
@@ -78,3 +86,9 @@ class PacGraphic:
 				if self.grid[row][column]==1:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//4)
 	
+	
+	def draw_text(self):
+		if self.timer < 2.5:
+			ready_lbl = self.font.render("READY!", True, YELLOW)
+			x,y=self.grid_to_window(row=19,col=10)
+			self.WIN.blit(ready_lbl,[x-6,y+6])
