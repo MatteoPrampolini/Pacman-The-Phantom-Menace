@@ -5,7 +5,7 @@ import sys
 from enum import Enum
 import numpy as np
 import graphics as gp
-from entities import Pacman, RedGhost, PinkGhost
+from entities import Pacman, RedGhost, PinkGhost, FACING
 import heapq
 class Actions():
 	UP 	 = [1,0,0,0,0]
@@ -45,9 +45,8 @@ class Game():
 		
 	def reset(self):
 		self.frame_iteration = 0
-		#0=clear path,1=wall,2=coin path,3=invalid
 		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
-		
+		self.score=0
 		self.graphics.reset()
 		self.graphics.get_grid(self.grid)
 		self.debug=False
@@ -57,44 +56,52 @@ class Game():
 	def init_entities(self):
 		pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),name="pacman")
 		x,y=self.graphics.grid_to_window(row=23,col=13)
-
+		rect_dim=27
 		pacman.default_x=x
 		pacman.default_y=y+48-6
-		pacman.set_rect(pacman.default_x,pacman.default_y,26,26)
+		pacman.set_rect(pacman.default_x,pacman.default_y,rect_dim,rect_dim)
 		self.entities.append(pacman)
 		#RED
-		red=RedGhost(os.path.join('Assets', 'red-tmp.png'),self.grid,name="blinky")
-		x,y=self.graphics.grid_to_window(row=11,col=13)
-		red.default_x=x
-		red.default_y=y+48-6
-		red.set_rect(red.default_x,red.default_y,26,26)
-		self.entities.append(red)
-		#PINK
+		# red=RedGhost(os.path.join('Assets', 'red-tmp.png'),self.grid,name="blinky")
+		# x,y=self.graphics.grid_to_window(row=11,col=13)
+		# red.default_x=x
+		# red.default_y=y+48-6
+		# red.set_rect(red.default_x,red.default_y,rect_dim,rect_dim)
+		# self.entities.append(red)
+		# #PINK
 		# pink=PinkGhost(os.path.join('Assets', 'pink-tmp.png'),self.grid,name="pinky")
 		# x,y=self.graphics.grid_to_window(row=11,col=13)
 		# pink.default_x=x
 		# pink.default_y=y+48-6
-		# pink.set_rect(pink.default_x,pink.default_y,26,26)
+		# pink.set_rect(pink.default_x,pink.default_y,rect_dim,rect_dim)
 		# self.entities.append(pink)
 	
-	
+	def check_game_won(self):
+		return (1 not in self.grid) # se non c'e' formaggio (1)-> vinto
+			
 	def move_entity(self,entity,action):
 		rect=entity.rect
 		VEL=entity.VEL
 		if action==Actions.LEFT and rect.x - VEL > 0:  # LEFT
 			if self.can_move(Actions.LEFT,entity):
 				rect.x -= VEL
+				entity.facing= FACING.WEST
 				
 		if action==Actions.RIGHT and rect.x + VEL + rect.width < WIDTH:	# RIGHT
 			if self.can_move(Actions.RIGHT,entity):
 				rect.x += VEL
+				entity.facing= FACING.EAST
 		if action==Actions.UP and rect.y - VEL > 0:	# UP
 			if self.can_move(Actions.UP,entity):
 				rect.y -= VEL
+				entity.facing= FACING.NORTH
 		if action==Actions.DOWN and rect.y + VEL + rect.height < HEIGHT:	 # DOWN
 			if self.can_move(Actions.DOWN,entity):
 				rect.y += VEL
-		if entity.name=="pacman":
+				entity.facing= FACING.SOUTH
+		if entity.name=="pacman": #eat cheese
+			if self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]==1:
+				self.score+=10
 			self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]=0
 		entity.pos_in_grid_x,entity.pos_in_grid_y=entity.window_to_grid()
 	def coords_to_direction(self,x,y,dx,dy):
@@ -144,16 +151,58 @@ class Game():
 	def play_step(self,action):
 		if self.graphics.timer <2.5:
 			#return #il timer lo abilito nella release, mentre sviluppo e' una perdita di tempo
-			pass
+			pass 
 		for entity in self.entities:
 			entity.set_pos_in_grid()
 			if entity.name != "pacman": #if ghost
-				#LEGENDA: px=pacman_x,dx=destion_x (next step in path),ex=entity_x (ghost)
 				px=self.entities[ENTITIES.PACMAN.value].pos_in_grid_x
 				py=self.entities[ENTITIES.PACMAN.value].pos_in_grid_y
+				if entity.name=="pinky":
+					tmpx=px
+					tmpy=py
+					i=8
+					pacman_facing=self.entities[ENTITIES.PACMAN.value].facing
+					if pacman_facing==FACING.NORTH:
+						while i>0:
+							py=tmpy-i
+							if py<0:
+								py=0
+							if self.grid[py][px]<2:
+								break
+							i-=1
+					if pacman_facing== FACING.SOUTH:
+						while i>0:
+							py=tmpy+i
+							if py>30:
+								py=30
+							if self.grid[py][px]<2:
+								break
+							i-=1
+					if pacman_facing== FACING.WEST:
+						while i>0:
+							px=tmpx-i
+							if px<0:
+								px=0
+							if self.grid[py][px]<2:
+								break
+							i-=1
+					#print(i)
+					if pacman_facing== FACING.EAST:
+						while i>0:
+							px=tmpx+i
+							if px>27:
+								px=27
+							if self.grid[py][px]<2:
+								break
+							i-=1
+						#print(px)
+							
+				#print(px,py)
+				#LEGENDA: px=pacman_x,dx=destion_x (next step in path),ex=entity_x (ghost)
 				dy,dx=entity.get_new_path(px,py) #where am i going to move
 				ex=entity.pos_in_grid_x
 				ey=entity.pos_in_grid_y
+				
 				#print("sono a: "+str(ey)+","+str(ex)+" e voglio andare a: "+str(dy)+","+str(dx))
 				if dx==-1: #dovrebbe sempre trovare il path, questo if e' in caso l'universo si distrugga
 					print("error")
@@ -161,12 +210,20 @@ class Game():
 					
 				else: #if tutto bene
 					action=self.coords_to_direction(ex,ey,dx,dy)
-		
 			self.move_entity(entity,action) 
-				
 			
+	def check_game_over(self):
+		pacman=self.entities[ENTITIES.PACMAN.value]
+		for entity in self.entities:
+			#print(entity.name+": "+str(entity.pos_in_grid_y)+","+str(entity.pos_in_grid_x)+"\t pacman: "+str(pacman.pos_in_grid_y)+","+str(pacman.pos_in_grid_x))
+			if entity.name !="pacman":
+				
+				if pacman.rect.colliderect(entity.rect):
+					self.game_over=True
+					return True
 		
-		
+		self.game_over=False
+		return False
 def main():
 
 	game= Game()
@@ -181,7 +238,10 @@ def main():
 		game.graphics.draw_window(game.debug)
 		action=check_keyboard() #questo ora e manuale, poi ci pensera' l'agents
 		game.play_step(action) #ignorare il parametro per ora
-		if game.is_game_over:
+		print(game.score)
+		if game.check_game_over():
+			game.reset()
+		if game.check_game_won():
 			game.reset()
 def check_for_events(game):
 			

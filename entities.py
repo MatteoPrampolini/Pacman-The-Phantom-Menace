@@ -6,10 +6,10 @@ from enum import Enum
 from graphics import CELL_DIM,OFFSET_X,OFFSET_Y
 import pathfinding
 class FACING(Enum):
-	NORD = 0,
+	NORTH = 0,
 	SOUTH= 1,
 	WEST = 2,
-	OVEST= 3
+	EAST= 3
 class Actions():
 	UP 	 = [1,0,0,0,0]
 	DOWN = [0,1,0,0,0]
@@ -24,7 +24,7 @@ class Entity:
 		#self.set_rect(x,y,*self.IMAGE.get_size())
 		self.default_x=0
 		self.default_y=0
-		self.Facing= FACING.NORD
+		self.facing= FACING.EAST
 		self.pos_in_grid_x=0
 		self.pos_in_grid_y=0
 		self.VEL = 3
@@ -41,12 +41,7 @@ class Entity:
 		self.rect.width=w
 		self.rect.height=h
 	
-	def move(self,x,y):
-		self.pos_in_grid_x=x
-		self.pos_in_grid_y=y
-		x=x*CELL_DIM
-		y=y*CELL_DIM
-		
+
 		
 	def window_to_grid(self):
 		x=(self.rect.x-OFFSET_X+self.rect.width//2)//CELL_DIM

@@ -55,8 +55,8 @@ class PacGraphic:
 	
 	def grid_to_window(self,row,col): 
 		
-		x=col*CELL_DIM+OFFSET_X
-		y=row*CELL_DIM#+OFFSET_Y
+		x=col*CELL_DIM
+		y=row*CELL_DIM
 		return x,y
 	
 	def draw_entities(self):
@@ -73,7 +73,6 @@ class PacGraphic:
 		self.draw_coins()
 		self.draw_entities()
 		self.draw_text()
-		#print(self.timer)
 		pygame.display.update()
 	
 	
