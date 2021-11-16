@@ -1,5 +1,5 @@
 @echo off
 setlocal
 cd /d %~dp0
-python3 "agent.py"
+python3 "game.py"
 pause

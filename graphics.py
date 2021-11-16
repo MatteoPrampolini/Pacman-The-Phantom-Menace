@@ -18,9 +18,10 @@ GREEN =(50, 168, 86)
 GOLD= (255,215,0)
 COIN= (224, 209, 209)
 YELLOW = (255,241,0)
-from main import ENTITIES
+
+FPS = 60
 class PacGraphic:
-	
+		
 	def __init__(self,WIDTH,HEIGHT):
 		self.w=WIDTH
 		self.h=HEIGHT
@@ -30,8 +31,11 @@ class PacGraphic:
 		self.grid = None
 		self.font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),25)
 		self.timer=0
+		self.clock = pygame.time.Clock()
+		
 	def reset(self):
 		self.timer= 0
+		self.frame_iteration=0
 		for entity in self.entities:
 			entity.reset_position()
 	def get_grid(self,grid):
@@ -73,6 +77,8 @@ class PacGraphic:
 		self.draw_coins()
 		self.draw_entities()
 		self.draw_text()
+		self.clock.tick(FPS)
+		self.frame_iteration+=1
 		pygame.display.update()
 	
 	
