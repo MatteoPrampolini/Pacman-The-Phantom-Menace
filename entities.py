@@ -6,9 +6,9 @@ from enum import Enum
 from graphics import CELL_DIM,OFFSET_X,OFFSET_Y,FPS
 import pathfinding
 class FACING(Enum):
-	NORTH = 0,
-	SOUTH= 1,
-	WEST = 2,
+	NORTH = 0
+	SOUTH= 1
+	WEST = 2
 	EAST= 3
 class Actions():
 	UP 	 = [1,0,0,0,0]
@@ -58,12 +58,12 @@ class Entity:
 class Pacman(Entity):
 	def __init__(self,img_path,name="no name"):
 		super().__init__(img_path,name)
-		self.VEL = 3*FPS/60
+		self.VEL = int(3*FPS/60)
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)
 		self.solver= pathfinding.solver(grid)
-		self.VEL = 2*FPS/60
+		self.VEL = int(1*FPS/60)
 		self.last_action=Actions.HALT
 		self.old_path=None
 	def get_new_path(self,pacman):

@@ -8,15 +8,15 @@ from helper import plot
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
-TARGET_GAMES=180
+TARGET_GAMES=70
 class Agent:
 
 	def __init__(self):
 		self.n_games = 0
-		self.epsilon = 0.1 # randomness
-		self.gamma = 0.9 # discount rate
+		self.epsilon = 0.0 # randomness
+		self.gamma = 0.5 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(7, 64, 5)
+		self.model = Linear_QNet(8, 128, 5)
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
 	def get_state(self, game):
@@ -24,30 +24,34 @@ class Agent:
 		pacman=game.entities[ENTITIES.PACMAN.value]
 		red =game.entities[ENTITIES.RED.value]
 		#pink=game.entities[ENTITIES.PINK.value]
-		can_move_arr=[int(game.can_move(Actions.LEFT,pacman)),int(game.can_move(Actions.RIGHT,pacman)),int(game.can_move(Actions.UP,pacman)),int(game.can_move(Actions.DOWN,pacman))]
+		can_move_arr=[int(game.can_move(Actions.LEFT,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.RIGHT,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.UP,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.DOWN,pacman.rect.y,pacman.rect.x))]
 		
 		red_top=int(red.pos_in_grid_y > pacman.pos_in_grid_y)
 		#pink_top=pink.pos_in_grid_y > pacman.pos_in_grid_y
 		red_left=int(red.pos_in_grid_x < pacman.pos_in_grid_x)
 		#pink_left=pink.pos_in_grid_x < pacman.pos_in_grid_x
-		#can_move_arr=game.can_move_neighbours_cells(pacman)
 		#print(str(can_move_arr))
-		# cheese_list=[]
-		# for action in Actions:
-			# if action != Actions.HALT:
-				# cheese_list.append(game.cheese_per_action(action,pacman))
-		# biggest=cheese_list.index(max(cheese_list))
+		cheese_list=[]
+		for action in Actions:
+			if action != Actions.HALT:
+				cheese_list.append(game.cheese_per_action(action,pacman))
+		biggest=cheese_list.index(max(cheese_list))
 		#print(cheese_list)
 		#print(biggest)
-		red_danger=int(game.check_running_into_danger(red))
+		red_danger_y,red_danger_x,ghost_facing=game.check_ghost_is_coming(red)
 		#red_danger_y= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		#red_danger_x= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		#pink_danger_y= pink.pos_in_grid_y == pacman.pos_in_grid_y
 		#pink_danger_x= pink.pos_in_grid_y == pacman.pos_in_grid_y
 		#state=[int(red_danger_y),int(red_danger_x),int(pink_danger_y),int(pink_danger_y),*can_move_arr]
 		#state=[red_top,red_left,red_danger_y,red_danger_x,*can_move_arr]
-		print(red_danger)
-		state=[*can_move_arr,red_danger,red_top,red_left]
+		#print(red_danger)
+		#print(ghost_facing.value)
+		#if red_danger_y:
+			#print("ROSSO VICINO Y")
+		state=[*can_move_arr,red_danger_y,red_danger_x,red_top,red_left]
+		#state=[red_danger_y,red_danger_x,red_top,red_left]
+
 		#print(state)
 		#state =[int(red_top),int(red_left),int(pink_top),int(pink_left),biggest]
 		#state =[biggest]
@@ -116,7 +120,53 @@ def load_complete_model(agent,game):
 	agent.model.eval()
 	
 	print("loaded")
+def save_state_dict(agent):
+	PATH= os.path.dirname(__file__)
+	model_folder_path = 'model'
+	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
+	file_name = os.path.join(PATH,model_folder_path,'model.pth')
+	if os.path.exists(file_name):
+		os.remove(file_name)
+	torch.save(agent.model.state_dict(), file_name)
+	print("saved")
+def load_state_dict(agent,game):
+	game.should_run=False
+	PATH= os.path.dirname(__file__)
+	model_folder_path = 'model'
+	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
+	file_name = os.path.join(PATH,model_folder_path,'model.pth')
+	if not os.path.isfile(file_name):
+		print("no previous model.pth found")
+		write_record(0)
+		#sys.exit(1)
+	#print(file_name
+	else:
+		agent.model.load_state_dict(torch.load(file_name)) 
+		game.reset()
+		game.should_run=True
+		agent.model.eval()
+		print("loaded")
 
+def write_record(record):
+	model_folder_path = 'model'
+	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
+	file_name = os.path.join(PATH,model_folder_path,'record.txt')
+	f = open(file_name, "w")
+	f.write(str(record))
+	f.close()
+
+def read_record():
+	model_folder_path = 'model'
+	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
+	file_name = os.path.join(PATH,model_folder_path,'record.txt')
+	if os.path.exists(file_name):
+		f = open(file_name, "r")
+		record=int(f.readline())
+		#print(record)
+		f.close()
+	else:
+		record=0
+	return record
 def play():
 	PATH= os.path.dirname(__file__)
 	os.chdir(PATH)
@@ -174,7 +224,9 @@ def train():
 	#ricordo che model.pth contiene gli state_dict, quindi il modello parziale.
 	#https://pytorch.org/tutorials/beginner/saving_loading_models.html
 	file_name = os.path.join(model_folder_path,'model.pth')
-	
+	load_state_dict(agent,game)
+	record=read_record()
+	print("previous record:"+str(record))
 	while True:
 		check_for_events(game)
 		while not game.is_running:
@@ -200,9 +252,9 @@ def train():
 
 		# perform move and get new state
 		
-		#print(str(final_move))
-		
+		#print(Actions(final_move).name)
 		reward, done, score = game.play_step(Actions(final_move))
+		#print(reward)
 		#print(reward,done,score)
 		#print(game.entities[0],final_move,game.can_move(final_move,game.entities[0]))
 		state_new = agent.get_state(game)
@@ -222,9 +274,10 @@ def train():
 			if score > record:
 				record = score
 				agent.model.save()
-			
+				write_record(record)
 			if agent.n_games>=TARGET_GAMES:
 				save_complete_model(agent)
+				save_state_dict(agent)
 			print('Game', agent.n_games, 'This Score', score, 'Best Score:', record)
 
 			#plot_scores.append(score)

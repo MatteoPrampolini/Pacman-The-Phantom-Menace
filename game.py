@@ -79,45 +79,100 @@ class Game():
 		# pink.set_pos_in_grid()
 		# self.entities.append(pink)
 	
-	def check_running_into_danger(self,entity):
+	def check_ghost_is_coming(self,entity): #check if ghost is in line of sight 
 		pacman=self.entities[0]
-		if entity.pos_in_grid_y == pacman.pos_in_grid_y:
-			if pacman.facing==FACING.NORTH and entity.facing==FACING.SOUTH:
-				return True
-			if pacman.facing==FACING.SOUTH and entity.facing==FACING.NORTH:
-				return True
-		if entity.pos_in_grid_x == pacman.pos_in_grid_x:
-			if pacman.facing==FACING.WEST and entity.facing==FACING.EAST:
-				return True
-			if pacman.facing==FACING.EAST and entity.facing==FACING.WEST:
-				return True
-		return False
-
+		py=pacman.pos_in_grid_y
+		px=pacman.pos_in_grid_x
+		ey=entity.pos_in_grid_y
+		ex=entity.pos_in_grid_x
+		vision=60
+		entity_long_rect_y= pygame.Rect(entity.rect.x-pacman.rect.height/2,entity.rect.y-vision+entity.rect.width/2,60,vision*2)
+		pacman_long_rect_y= pygame.Rect(pacman.rect.x-entity.rect.height/2,pacman.rect.y-vision+pacman.rect.width/2,60,vision*2)
+		entity_long_rect_x= pygame.Rect(entity.rect.x-vision+entity.rect.width/2,entity.rect.y-entity.rect.height/2,vision*2,60)
+		pacman_long_rect_x= pygame.Rect(pacman.rect.x-vision+pacman.rect.width/2,pacman.rect.y-pacman.rect.height/2,vision*2,60)
+		y=0
+		x=0
+		if entity_long_rect_y.colliderect(pacman_long_rect_y):
+			#pygame.draw.rect(self.graphics.WIN,(200,0,0),entity_long_rect_y)
+			#pygame.draw.rect(self.graphics.WIN,(255,0,0),pacman_long_rect_y)
+			#pygame.display.update()
+			#if entity.facing==FACING.SOUTH and py > ey:
+				#return True
+			y=1
+				#print("kek s")
+			#if entity.facing==FACING.NORTH and py < ey:
+				#return True
+				#y=1
+				#print("kek n")
+		if entity_long_rect_x.colliderect(pacman_long_rect_x):
+			#pygame.draw.rect(self.graphics.WIN,(0, 0, 255),entity_long_rect_x)
+			#pygame.draw.rect(self.graphics.WIN,(0,255,0),pacman_long_rect_x)
+			#pygame.display.update()
+			#if entity.facing==FACING.WEST and px < ex:
+				#return True
+			x=1
+				#print("kek w")
+			#if entity.facing==FACING.EAST and px > ex:
+				#return True
+			#x=1
+				#print("kek e")
+		return y,x, entity.facing
+	
+	def check_pacman_is_goodboy(self,ghost_facing): #check if pacman is in danger but he is running away
+		pf=self.entities[0].facing
+		if ghost_facing==FACING.NORTH and pf==FACING.SOUTH:
+			return False
+		if ghost_facing==FACING.SOUTH and pf==FACING.NORTH:
+			return False
+		if ghost_facing==FACING.WEST and pf==FACING.EAST:
+			return False		
+		if ghost_facing==FACING.EAST and pf==FACING.WEST:
+			return False
+		return True
+		
 	def check_game_won(self):
 		return (1 not in self.grid) # se non c'e' formaggio(1)-> vinto
 	def move_entity(self,entity,action):
 		rect=entity.rect
 		VEL=entity.VEL
 		cheese_eaten=False
+		ex,ey=entity.window_to_grid()
+		ex,ey=self.graphics.grid_to_window(ey,ex)
 		#if entity.name=="pacman":
 			#print(self.can_move(Actions.LEFT,entity),self.can_move(Actions.RIGHT,entity),self.can_move(Actions.UP,entity),self.can_move(Actions.DOWN,entity))
 			#print(rect.x - VEL > 0,rect.x + VEL + rect.width < WIDTH,rect.y - VEL > 0,rect.y + VEL + rect.height < HEIGHT)
 			#print( action==Actions.LEFT, action==Actions.RIGHT, action==Actions.UP, action==Actions.UP,action==Actions.UP)
-		if action==Actions.LEFT and rect.x - VEL > 0:  # LEFT
-			if self.can_move(Actions.LEFT,entity):
-				entity.rect.x -= VEL
+		if action==Actions.LEFT:  # LEFT
+			if rect.x - VEL > 0:
+				possible_x= entity.rect.x - VEL
+			else:
+				possible_x= 0
+			if self.can_move(action,ey,possible_x):
+				entity.rect.x=possible_x
 				entity.facing= FACING.WEST
-		elif action==Actions.RIGHT and rect.x + VEL + rect.width < WIDTH:	# RIGHT
-			if self.can_move(Actions.RIGHT,entity):
-				entity.rect.x += VEL
+		elif action==Actions.RIGHT:	# RIGHT
+			if rect.x + rect.width +VEL< WIDTH:
+				possible_x=entity.rect.x + VEL
+			else:
+				possible_x = WIDTH-entity.rect.width
+			if self.can_move(action,ey,possible_x):
+				entity.rect.x=possible_x
 				entity.facing= FACING.EAST
-		elif action==Actions.UP and rect.y - VEL > 0:	# UP
-			if self.can_move(Actions.UP,entity):
-				entity.rect.y -= VEL
+		elif action==Actions.UP:	# UP
+			if rect.y - VEL > 0:
+				possible_y=entity.rect.y - VEL
+			else:
+				possible_y = 0 
+			if self.can_move(action,possible_y,ex):
+				entity.rect.y=possible_y
 				entity.facing= FACING.NORTH
-		elif action==Actions.DOWN and rect.y + VEL + rect.height < HEIGHT:	 # DOWN
-			if self.can_move(Actions.DOWN,entity):
-				entity.rect.y += VEL
+		elif action==Actions.DOWN: # DOWN
+			if rect.y + rect.height + VEL < HEIGHT:
+				possible_y=entity.rect.y + rect.height + VEL
+			else:
+				possible_y=HEIGHT-entity.rect.height
+			if self.can_move(action,possible_y,ex):
+				entity.rect.y=possible_y
 				entity.facing= FACING.SOUTH
 
 		entity.pos_in_grid_x,entity.pos_in_grid_y=entity.window_to_grid()
@@ -141,12 +196,23 @@ class Game():
 			return Actions.UP
 		
 	#wx,wy mi servono per allineare bene le sprites alla griglia, perché le collisioni della grid sono spartane
-	def can_move(self,action,entity):
-		x,y=entity.window_to_grid()
+	#DIPENDENZA CLASSE GRAPHICS ROTTA
+	def can_move(self,action,possible_y,possible_x):
 		#print(action,entity)
+		x=(possible_x+30//2)//16
+		y=(possible_y+30//2)//16
+		print(y,x)
+		if action == Actions.UP and y<0:
+			return False
+		if action == Actions.DOWN and y>29:
+			return False
+		if action == Actions.LEFT and y<0:
+			return False
+		if action == Actions.RIGHT and y>26:
+			return False
 		if action == Actions.UP and self.grid[y-1,x]==2:
-			wx,wy=self.graphics.grid_to_window(y+1,x)
-			y=entity.rect.y-entity.rect.height
+			#wx,wy=self.graphics.grid_to_window(y+1,x)
+			#y=entity.rect.y-entity.rect.height
 			#rimettere
 			#if y > wy :
 			#	return True
@@ -159,12 +225,12 @@ class Game():
 			#	return True
 			return False
 		if action == Actions.LEFT and self.grid[y,x-1]==2:
-			wx,wy=self.graphics.grid_to_window(y,x-1)
-			x=entity.rect.x-entity.rect.width/2
+			#wx,wy=self.graphics.grid_to_window(y,x-1)
+			#x=entity.rect.x-entity.rect.width/2
 			#rimettere
 			#	return True
-			if x > wx :
-				return True
+			#if x > wx :
+			#	return True
 			return False
 		if action == Actions.RIGHT and self.grid[y,x+1]==2:
 			#wx,wy=self.graphics.grid_to_window(y,x+1)
@@ -204,16 +270,24 @@ class Game():
 		if cheese_eaten:
 			self.score+=10
 			reward=20
-		else:
-			reward=-5
+		#if not self.can_move(action,entity):
+		#	reward+=-3
+		#	print("bad action "+ Actions(action).name)
+		#else:
+		#	reward=-5
 		#se sono in pericolo (non è preciso perché ignora i muri) allora non ti premio
 		#red=self.entities[ENTITIES.RED.value]
 		for entity in self.entities:
 			if entity.name=="pacman":
 				continue
-			if self.check_running_into_danger(entity):
-				reward=-20
-				break
+			danger_y,danger_x,ghost_facing=self.check_ghost_is_coming(entity)
+			#is_goodboy=self.check_pacman_is_goodboy(ghost_facing)
+			if danger_y: #and not is_goodboy:
+				reward+=-40
+			if danger_x:# and not is_goodboy:
+				reward+=-40
+			#if is_goodboy:
+			#	reward+=10
 		if self.check_game_over():
 			reward=-300
 			game_over=1
