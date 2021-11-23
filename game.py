@@ -36,6 +36,8 @@ class Game():
 		self.graphics = gp.PacGraphic(w,h) #questa classe gestisce tutto cio' che e' grafico.
 		#0=clear_path,2=wall,1=coin,3=invalid
 		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
+		self.memory=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,2,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[0,0,0,0,0,0,0,0,0,0,2,3,3,3,3,3,3,2,0,0,0,0,0,0,0,0,0,0],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
+
 		#initialize entities
 		self.entities = list()
 		self.init_entities()
@@ -49,24 +51,34 @@ class Game():
 		self.score=0
 		self.graphics.reset()
 		self.graphics.get_grid(self.grid)
-		self.debug=False
+		self.debug=True
 		self.is_running=True
 		self.is_game_over=False
 	
 	def init_entities(self):
 		pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),name="pacman")
 		x,y=self.graphics.grid_to_window(row=23,col=13)
-		rect_dim=30
-		pacman.default_x=x
-		pacman.default_y=y+48-8
+		#x,y=self.graphics.grid_to_window(row=14,col=18)
+
+		rect_dim=16
+		offsettino_x=0
+		offsettino_y=0
+		#offsettino_x=0#7 #29/2
+		#offsettino_y=12 #33/2
+		pacman.default_x=x#+offsettino_x
+		pacman.default_y=y+48#+8
+		#offsettino_y+44#36#+48#36
 		pacman.set_rect(pacman.default_x,pacman.default_y,rect_dim,rect_dim)
 		pacman.set_pos_in_grid()
 		self.entities.append(pacman)
+		#input()
 		#RED
 		red=RedGhost(os.path.join('Assets', 'red-tmp.png'),self.grid,name="blinky")
 		x,y=self.graphics.grid_to_window(row=11,col=13)
-		red.default_x=x
-		red.default_y=y+48-6
+		#offsettino_x=15#//2 #29/2
+		#offsettino_y=16#//2 #33/2
+		red.default_x=x#+offsettino_x
+		red.default_y=y+48#36+offsettino_y
 		red.set_rect(red.default_x,red.default_y,rect_dim,rect_dim)
 		red.set_pos_in_grid()
 		self.entities.append(red)
@@ -85,11 +97,12 @@ class Game():
 		px=pacman.pos_in_grid_x
 		ey=entity.pos_in_grid_y
 		ex=entity.pos_in_grid_x
-		vision=60
-		entity_long_rect_y= pygame.Rect(entity.rect.x-pacman.rect.height/2,entity.rect.y-vision+entity.rect.width/2,60,vision*2)
-		pacman_long_rect_y= pygame.Rect(pacman.rect.x-entity.rect.height/2,pacman.rect.y-vision+pacman.rect.width/2,60,vision*2)
-		entity_long_rect_x= pygame.Rect(entity.rect.x-vision+entity.rect.width/2,entity.rect.y-entity.rect.height/2,vision*2,60)
-		pacman_long_rect_x= pygame.Rect(pacman.rect.x-vision+pacman.rect.width/2,pacman.rect.y-pacman.rect.height/2,vision*2,60)
+		height=60
+		width=16
+		entity_long_rect_y= pygame.Rect(entity.rect.x-pacman.rect.height/2,entity.rect.y-height+entity.rect.width/2,width,height*2)
+		pacman_long_rect_y= pygame.Rect(pacman.rect.x-entity.rect.height/2,pacman.rect.y-height+pacman.rect.width/2,width,height*2)
+		entity_long_rect_x= pygame.Rect(entity.rect.x-height+entity.rect.width/2,entity.rect.y-entity.rect.height/2,height*2,width)
+		pacman_long_rect_x= pygame.Rect(pacman.rect.x-height+pacman.rect.width/2,pacman.rect.y-pacman.rect.height/2,height*2,width)
 		y=0
 		x=0
 		if entity_long_rect_y.colliderect(pacman_long_rect_y):
@@ -143,46 +156,188 @@ class Game():
 			#print(rect.x - VEL > 0,rect.x + VEL + rect.width < WIDTH,rect.y - VEL > 0,rect.y + VEL + rect.height < HEIGHT)
 			#print( action==Actions.LEFT, action==Actions.RIGHT, action==Actions.UP, action==Actions.UP,action==Actions.UP)
 		if action==Actions.LEFT:  # LEFT
-			if rect.x - VEL > 0:
-				possible_x= entity.rect.x - VEL
-			else:
-				possible_x= 0
-			if self.can_move(action,ey,possible_x):
-				entity.rect.x=possible_x
+		#	if rect.x + rect.width//2 - VEL> 0:
+		#		possible_x= entity.rect.x - VEL
+		#	else:
+		#		possible_x= 0
+			if self.can_move(action,entity):
+				y=entity.pos_in_grid_y
+				x=entity.pos_in_grid_x
+				rect.x-=rect.width
+				if y==14: 
+					if x==0:
+						rect.x=WIDTH-rect.width
+						
+				#entity.rect.x-=VEL
+				
 				entity.facing= FACING.WEST
+		#	else:
+				#print("can't move")
+				#pass
 		elif action==Actions.RIGHT:	# RIGHT
-			if rect.x + rect.width +VEL< WIDTH:
-				possible_x=entity.rect.x + VEL
-			else:
-				possible_x = WIDTH-entity.rect.width
-			if self.can_move(action,ey,possible_x):
-				entity.rect.x=possible_x
+			#if rect.x + rect.width +VEL< WIDTH:
+			#	possible_x=entity.rect.x + VEL
+			#else:
+			#	possible_x = WIDTH-entity.rect.width
+			if self.can_move(action,entity):
+				y=entity.pos_in_grid_y
+				x=entity.pos_in_grid_x
+				rect.x+=rect.width
+				if y==14: 
+					if x==27:
+						rect.x=0
+			#entity.rect.x+=VEL
+				#rect.x+=rect.width
 				entity.facing= FACING.EAST
+			#else:
+				#print("can't move")
+				#pass
 		elif action==Actions.UP:	# UP
-			if rect.y - VEL > 0:
-				possible_y=entity.rect.y - VEL
-			else:
-				possible_y = 0 
-			if self.can_move(action,possible_y,ex):
-				entity.rect.y=possible_y
+			#if rect.y + rect.height//2 - VEL > 0:
+			#	possible_y=entity.rect.y - VEL
+			#else:
+			#	possible_y = 0 
+			if self.can_move(action,entity):
+				#entity.rect.y-=VEL
+				rect.y-=rect.height
 				entity.facing= FACING.NORTH
+			#else:
+				#print("can't move")
+			#	pass
 		elif action==Actions.DOWN: # DOWN
-			if rect.y + rect.height + VEL < HEIGHT:
-				possible_y=entity.rect.y + rect.height + VEL
-			else:
-				possible_y=HEIGHT-entity.rect.height
-			if self.can_move(action,possible_y,ex):
-				entity.rect.y=possible_y
+			#if rect.y + rect.height + VEL < HEIGHT:
+			#if rect.y + rect.height//2 + VEL < HEIGHT:
+			#	possible_y=entity.rect.y + VEL #rect.height//2 + VEL
+			#else:
+			#	possible_y=HEIGHT-rect.height//2
+			if self.can_move(action,entity):
+				#entity.rect.y+=VEL
+				rect.y+=rect.height
+				#entity.rect.y=possible_y
 				entity.facing= FACING.SOUTH
-
+			#else:
+				#print("can't move")
+			#	pass
+		
 		entity.pos_in_grid_x,entity.pos_in_grid_y=entity.window_to_grid()
 		if entity.name=="pacman": #eat cheese
+			#print(self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x])
 			if self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]==1:
 				cheese_eaten=True
 			self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]=0
+			self.memory[entity.pos_in_grid_y][entity.pos_in_grid_x]=1
 			
 		
 		return cheese_eaten
+	#DIPENDENZA CLASSE GRAPHICS ROTTA
+	def can_move(self,action,entity):
+		#print(self.graphics.window_to_grid(entity.rect.x,entity.rect.y))
+		#return True #TODO
+		#print(action,entity)
+		#x=(possible_x+30//2)//16
+		#y=(possible_y+30//2)//16
+		#print(y,x)
+		x,y=entity.window_to_grid()
+		next_y=y
+		next_x=x
+		#VEL=entity.VEL
+		#rect=entity.rect
+		#print(rect.bottom)
+		#pixel_x,pixel_y=self.graphics.grid_to_window(y,x)
+		
+		#pixelx=0
+		#pixel_y=0
+		#signoreIddioy=6
+		#signoreIddiox=4
+		#pixel_y+=6#offsettino_y//2
+		#pixel_x+=4#offsettino_x//2
+		if action == Actions.UP: #and y<0:
+			next_y=y-1
+			#pixel_y=rect.x#-entity.rect.height//2
+			#pixel_next_y=pixel_y-VEL#-signoreIddioy
+			#pixel_next_x=rect.x
+			# return False
+		if action == Actions.DOWN: #and y>29:
+			next_y=y+1
+			#pixel_y=rect.y-rect.height#rect.bottom
+			#pixel_next_y=pixel_y+VEL
+			#pixel_next_x=pixel_x
+			# return False
+		if action == Actions.LEFT: #and y<0:
+			next_x=x-1
+			#pixel_x=rect.x#-entity.rect.width//2
+			#pixel_next_x=pixel_x-VEL
+			#pixel_next_y=pixel_y
+			#pixel_next_x=pixel_x
+			# return False
+		if action == Actions.RIGHT: #and y>26:
+			next_x=x+1
+			#print(rect.right)
+			#print(rect.x,rect.right,rect.width)
+			#pixel_x=rect.x+entity.rect.width#//2
+			#pixel_next_x=pixel_x+VEL
+			#pixel_next_y=pixel_y
+		
+		if action == Actions.HALT:
+			return False
+			# return False
+		
+		#print(pixel_next_y,pixel_next_x)
+		#wx,wy=self.graphics.window_to_grid(pixel_next_x,pixel_next_y)
+		#print(self.graphics.grid_to_window(y,x),pixel_x,pixel_next_y)
+		# if action == Actions.UP and self.grid[y-1,x]==2:
+			# #wx,wy=self.graphics.grid_to_window(y+1,x)
+			# #y=entity.rect.y-entity.rect.height//2
+			# #rimettere
+			# if pixe
+			#if y > wy :
+				# return True
+			# return False
+		# if action == Actions.DOWN and self.grid[y+1,x]==2:
+			# #wx,wy=self.graphics.grid_to_window(y+1,x)
+			# #y=entity.rect.y#+entity.rect.height
+			# #print(y,wy)
+			# if pixel_y < wy :
+				# return True
+			# return False
+		# if action == Actions.LEFT and self.grid[y,x-1]==2:
+			# #wx,wy=self.graphics.grid_to_window(y,x-1)
+			# x=entity.rect.x-entity.rect.width//2
+			# #rimettere
+			# #	return True
+			# if pixel_x > wx :
+				# return True
+			# return False
+		# if action == Actions.RIGHT and self.grid[y,x+1]==2:
+			# #wx,wy=self.graphics.grid_to_window(y,x+1)
+			# #x=entity.rect.x#+entity.rect.width
+			# if pixel_x < wx :
+				# return True
+			# return False
+		
+		# return True
+		#wx,wy=self.graphics.window_to_grid(nex,pixel_next_y)
+		#print(wy,wx,self.grid[wy,wx])
+		#print(y,x,next_y,next_x)
+		#entity takes the tunnel
+		if next_y==14: 
+			if next_x==-1:
+				return True
+				#next_x=9
+				#print("tippo")
+			if next_x==28:
+				return True
+				#print("tippo")
+			
+		if next_y<0 or next_y>30 or next_x<0 or next_x>27:
+			return False
+		if self.grid[next_y,next_x]==2:
+			#print("can't move: "+ Actions(action).name)
+			#print("muro")
+			#print(y,x,wy,wx)
+			#print(self.graphics.grid_to_window(y,x),pixel_x,pixel_next_y)
+			return False
+		return True
 	def coords_to_direction(self,x,y,dx,dy):
 		#print(str(x)+">"+str(dx)+"="+str(x>dx))
 
@@ -196,72 +351,41 @@ class Game():
 			return Actions.UP
 		
 	#wx,wy mi servono per allineare bene le sprites alla griglia, perché le collisioni della grid sono spartane
-	#DIPENDENZA CLASSE GRAPHICS ROTTA
-	def can_move(self,action,possible_y,possible_x):
-		#print(action,entity)
-		x=(possible_x+30//2)//16
-		y=(possible_y+30//2)//16
-		print(y,x)
-		if action == Actions.UP and y<0:
-			return False
-		if action == Actions.DOWN and y>29:
-			return False
-		if action == Actions.LEFT and y<0:
-			return False
-		if action == Actions.RIGHT and y>26:
-			return False
-		if action == Actions.UP and self.grid[y-1,x]==2:
-			#wx,wy=self.graphics.grid_to_window(y+1,x)
-			#y=entity.rect.y-entity.rect.height
-			#rimettere
-			#if y > wy :
-			#	return True
-			return False
-		if action == Actions.DOWN and self.grid[y+1,x]==2:
-			#wx,wy=self.graphics.grid_to_window(y+1,x)
-			#y=entity.rect.y#+entity.rect.height
-			#print(y,wy)
-			#if y < wy :
-			#	return True
-			return False
-		if action == Actions.LEFT and self.grid[y,x-1]==2:
-			#wx,wy=self.graphics.grid_to_window(y,x-1)
-			#x=entity.rect.x-entity.rect.width/2
-			#rimettere
-			#	return True
-			#if x > wx :
-			#	return True
-			return False
-		if action == Actions.RIGHT and self.grid[y,x+1]==2:
-			#wx,wy=self.graphics.grid_to_window(y,x+1)
-			#x=entity.rect.x#+entity.rect.width
-			#if x < wx :
-			#	return True
-			return False
-		return True
+
 	def play_step(self,action):
+		self.graphics.frame_iteration+=1
+		#print(self.graphics.frame_iteration,self.graphics.old_iter)
 		#sicurezza= distanza fantasma-pacman? e punisco quando la sicurezza diminuisce 
 		#print(action)
+		pacman=self.entities[ENTITIES.PACMAN.value]
 		if self.graphics.timer <2.5:
 			#return #il timer lo abilito nella release, mentre sviluppo e' una perdita di tempo
 			pass 
-		for entity in self.entities: #for each ghost
-			if entity.name == "pacman":
-				continue	
-			dy,dx=entity.get_new_path(self.entities[ENTITIES.PACMAN.value])
-			#LEGENDA: px=pacman_x,dx=destion_x (next step in path),ex=entity_x (ghost)
-			#dy,dx=entity.get_new_path(px,py) #where am i going to move
-			ex=entity.pos_in_grid_x
-			ey=entity.pos_in_grid_y
-			#print("sono a: "+str(ey)+","+str(ex)+" e voglio andare a: "+str(dy)+","+str(dx))
-			if dx==-1: #dovrebbe sempre trovare il path, questo if e' in caso l'universo si distrugga
-				print("error")
-				continue
-				
-			else: #if tutto bene
+		
+		if self.graphics.frame_iteration>self.graphics.old_iter+2:
+			self.graphics.old_iter=self.graphics.frame_iteration
+			#print("muovo")
+			for entity in self.entities: #for each ghost
+				if entity.name == "pacman":
+					continue	
+				dy,dx=entity.get_new_path(self.entities[ENTITIES.PACMAN.value])
+				#LEGENDA: px=pacman_x,dx=destion_x (next step in path),ex=entity_x (ghost)
+				#dy,dx=entity.get_new_path(px,py) #where am i going to move
+				ex=entity.pos_in_grid_x
+				ey=entity.pos_in_grid_y
+				#print("sono a: "+str(ey)+","+str(ex)+" e voglio andare a: "+str(dy)+","+str(dx))
+				#print(dx)
+				if dx==-2: #dovrebbe sempre trovare il path, questo if e' in caso l'universo si distrugga
+					print("error")
+					continue
+				if dx==-1:
+					dx=pacman.pos_in_grid_x
+					dy=pacman.pos_in_grid_y
+					#print("error")
+					#continue
 				ghost_action=self.coords_to_direction(ex,ey,dx,dy)
 				self.move_entity(entity,ghost_action)
-		pacman=self.entities[ENTITIES.PACMAN.value]
+
 		reward=0
 		game_over=0
 		#print("sono a: "+str(pacman.pos_in_grid_y)+","+str(pacman.pos_in_grid_x)+" e voglio andare " + str(action))
@@ -270,9 +394,9 @@ class Game():
 		if cheese_eaten:
 			self.score+=10
 			reward=20
-		#if not self.can_move(action,entity):
+		#if not self.can_move(action,entity) and action!= Actions.HALT:
 		#	reward+=-3
-		#	print("bad action "+ Actions(action).name)
+		#	print("can't move: "+ Actions(action).name)
 		#else:
 		#	reward=-5
 		#se sono in pericolo (non è preciso perché ignora i muri) allora non ti premio
@@ -288,23 +412,35 @@ class Game():
 				reward+=-40
 			#if is_goodboy:
 			#	reward+=10
+			if self.have_i_been_here_before(action,entity):
+				reward-=2
 		if self.check_game_over():
 			reward=-300
 			game_over=1
 			self.n_games+=1
 		self.graphics.draw_window(self.debug)
 		#print(pacman.pos_in_grid_y,pacman.pos_in_grid_x)
-		return reward, game_over, self.score
-					
+		#print(reward)
+		return reward, game_over, self.score	
 	def check_game_over(self):
 		pacman=self.entities[ENTITIES.PACMAN.value]
 		for entity in self.entities:
 			#print(entity.name+": "+str(entity.pos_in_grid_y)+","+str(entity.pos_in_grid_x)+"\t pacman: "+str(pacman.pos_in_grid_y)+","+str(pacman.pos_in_grid_x))
 			if entity.name !="pacman":
-				
-				if pacman.rect.colliderect(entity.rect):
-					#self.game_over=True
+				if entity.pos_in_grid_x== pacman.pos_in_grid_x and entity.pos_in_grid_y == pacman.pos_in_grid_y:
+				#e_rect=pygame.Rect(entity.rect.x,entity.rect.y,*entity.IMAGE.get_size())
+				#p_rect=pygame.Rect(pacman.rect.x,pacman.rect.y,*pacman.IMAGE.get_size())
+				#if p_rect.colliderect(e_rect):
+				#	self.game_over=True
 					return True
+			
+		return False
+			#if entity.pos_in_grid_y== pacman.pos_in_grid_y and entity.pos_in_grid_x==pacman.pos_in_grid_x:
+			#		return True
+		#return False
+				#if pacman.rect.colliderect(entity.rect):
+					#self.game_over=True
+				#	return True
 		if self.grid[pacman.pos_in_grid_y][pacman.pos_in_grid_x]>1:
 			print("WTF")
 			return True
@@ -350,7 +486,32 @@ class Game():
 					if cell == 1:
 						n=n+1
 		return n
+	
+	def have_i_been_here_before(self,action,entity):
+		y=entity.pos_in_grid_y
+		x=entity.pos_in_grid_x
+		next_y=y
+		next_x=x
+
+		if action == Actions.UP: #and y<0:
+			next_y=y-1
+
+		if action == Actions.DOWN: #and y>29:
+			next_y=y+1
+
+		if action == Actions.LEFT: #and y<0:
+			next_x=x-1
+		if action == Actions.RIGHT: #and y>26:
+			next_x=x+1
 		
+		if action == Actions.HALT:
+			return 0
+		
+		if next_y<0 or next_y>30 or next_x<0 or next_x>27:
+			return 0
+		if self.memory[next_y,next_x]==0:
+			return 0
+		return 1
 def main():
 
 	game= Game()

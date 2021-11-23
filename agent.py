@@ -16,7 +16,7 @@ class Agent:
 		self.epsilon = 0.0 # randomness
 		self.gamma = 0.5 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(8, 128, 5)
+		self.model = Linear_QNet(9, 160, 5)
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
 	def get_state(self, game):
@@ -24,7 +24,8 @@ class Agent:
 		pacman=game.entities[ENTITIES.PACMAN.value]
 		red =game.entities[ENTITIES.RED.value]
 		#pink=game.entities[ENTITIES.PINK.value]
-		can_move_arr=[int(game.can_move(Actions.LEFT,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.RIGHT,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.UP,pacman.rect.y,pacman.rect.x)),int(game.can_move(Actions.DOWN,pacman.rect.y,pacman.rect.x))]
+		can_move_arr=[int(game.can_move(Actions.LEFT,pacman)),int(game.can_move(Actions.RIGHT,pacman)),int(game.can_move(Actions.UP,pacman)),int(game.can_move(Actions.DOWN,pacman))]
+		#neightbours_memory=[int(game.have_i_been_here_before(Actions.LEFT,pacman)),int(game.have_i_been_here_before(Actions.RIGHT,pacman)),int(game.have_i_been_here_before(Actions.UP,pacman)),int(game.have_i_been_here_before(Actions.DOWN,pacman))]
 		
 		red_top=int(red.pos_in_grid_y > pacman.pos_in_grid_y)
 		#pink_top=pink.pos_in_grid_y > pacman.pos_in_grid_y
@@ -48,10 +49,12 @@ class Agent:
 		#print(red_danger)
 		#print(ghost_facing.value)
 		#if red_danger_y:
-			#print("ROSSO VICINO Y")
-		state=[*can_move_arr,red_danger_y,red_danger_x,red_top,red_left]
+		#	print("ROSSO VICINO Y")
+		#if red_danger_x:
+		#	print("ROSSO VICINO Y")
+		state=[*can_move_arr,red_danger_y,red_danger_x,red_top,red_left,biggest]#,*neightbours_memory]
 		#state=[red_danger_y,red_danger_x,red_top,red_left]
-
+		
 		#print(state)
 		#state =[int(red_top),int(red_left),int(pink_top),int(pink_left),biggest]
 		#state =[biggest]
@@ -253,7 +256,27 @@ def train():
 		# perform move and get new state
 		
 		#print(Actions(final_move).name)
+		#SCHIFO DEBUG
+		#print("---")
+		#can_mov_arr=np.array([state_old[0],state_old[1],state_old[2],state_old[3]])
+		#lista = np.where(can_mov_arr == 1)[0]
+		#left,right,up,down
+		#dire=""
+		#if 0 in lista:
+		#	dire+="left "
+		#if 1 in lista:
+			# dire+="right "
+		# if 2 in lista:
+			# dire+="up "
+		# if 3 in lista:
+			# dire+="down "			
+		# #print("possible moves: "+dire)
+		# if state_old[4]:
+			# print("DANGER Y")
+		# if state_old[5]:
+			# print("DANGER X")			
 		reward, done, score = game.play_step(Actions(final_move))
+		
 		#print(reward)
 		#print(reward,done,score)
 		#print(game.entities[0],final_move,game.can_move(final_move,game.entities[0]))

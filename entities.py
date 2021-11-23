@@ -25,12 +25,11 @@ class Entity:
 		self.default_x=0
 		self.default_y=0
 		self.facing= FACING.EAST
-		self.pos_in_grid_x=0
-		self.pos_in_grid_y=0
-		self.VEL = 3*FPS/60
+		#self.pos_in_grid_x=0
+		#self.pos_in_grid_y=0
+		self.VEL = 2*FPS/60
 	def reset_position(self):
-		self.rect.x= self.default_x
-		self.rect.y= self.default_y
+		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
 	
 	def set_pos_in_grid(self):
 		self.pos_in_grid_x,self.pos_in_grid_y=self.window_to_grid()
@@ -47,7 +46,6 @@ class Entity:
 		x=(self.rect.x-OFFSET_X+self.rect.width//2)//CELL_DIM
 		y=(self.rect.y-OFFSET_Y+self.rect.height//2)//CELL_DIM
 		
-		
 		return x,y
 	def __str__(self):
 		x=self.rect.x-OFFSET_X+self.rect.width//2
@@ -58,12 +56,14 @@ class Entity:
 class Pacman(Entity):
 	def __init__(self,img_path,name="no name"):
 		super().__init__(img_path,name)
-		self.VEL = int(3*FPS/60)
+		#self.VEL = int(2*FPS/60)
+		self.VEL=2
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)
 		self.solver= pathfinding.solver(grid)
-		self.VEL = int(1*FPS/60)
+		#self.VEL = int(1*FPS/60)
+		self.VEL=1
 		self.last_action=Actions.HALT
 		self.old_path=None
 	def get_new_path(self,pacman):
@@ -134,6 +134,6 @@ class PinkGhost(Ghost):
 		y=self.pos_in_grid_y
 		p = self.solver.get_path(py,px,y,x)
 		if not p:
-			return (-1,-1)
+			return (-2,-2)
 		if p:
 			return p

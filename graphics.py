@@ -19,7 +19,7 @@ GOLD= (255,215,0)
 COIN= (224, 209, 209)
 YELLOW = (255,241,0)
 
-FPS = 60
+FPS = 200
 class PacGraphic:
 		
 	def __init__(self,WIDTH,HEIGHT):
@@ -36,6 +36,7 @@ class PacGraphic:
 	def reset(self):
 		self.timer= 0
 		self.frame_iteration=0
+		self.old_iter=0
 		for entity in self.entities:
 			entity.reset_position()
 	def get_grid(self,grid):
@@ -57,6 +58,12 @@ class PacGraphic:
 				tmp.x=OFFSET_X+column*CELL_DIM
 				pygame.draw.rect(self.WIN,COLORS[self.grid[row][column]],tmp)
 	
+	def window_to_grid(self,x,y):
+		#x=(x-OFFSET_X+width//2)//CELL_DIM
+		#y=(y-OFFSET_Y+height//2)//CELL_DIM
+		x=(x)//CELL_DIM
+		y=(y)//CELL_DIM
+		return x,y
 	def grid_to_window(self,row,col): 
 		
 		x=col*CELL_DIM
@@ -65,10 +72,12 @@ class PacGraphic:
 	
 	def draw_entities(self):
 		for entity in self.entities:
-			self.WIN.blit(entity.IMAGE, (entity.rect.x,entity.rect.y))
+			self.WIN.blit(entity.IMAGE, (entity.rect.x+8,entity.rect.y+8))
+			pass
 	def draw_window(self,debug):
 		self.WIN.fill((0, 0, 0))
 		self.WIN.blit(self.MAP, (0, 0))
+		
 		if debug:
 			self.draw_grid()
 			for entity in self.entities:
@@ -76,6 +85,7 @@ class PacGraphic:
 		
 		self.draw_coins()
 		self.draw_entities()
+		
 		self.draw_text()
 		self.clock.tick(FPS)
 		self.frame_iteration+=1

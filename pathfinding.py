@@ -76,7 +76,7 @@ class solver():
 				k -= 1
 				
 		if len(the_path)== 1:
-			return the_path[0]
+			return (-1,-1) 
 		return the_path[1]
 		#print(the_path)
 
