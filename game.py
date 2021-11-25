@@ -26,6 +26,7 @@ WIDTH, HEIGHT = 448, 576
 pygame.display.set_caption("Pacman")
 #game settings
 
+ 
 
 class Game():
 	def __init__(self, w=WIDTH, h=HEIGHT):
@@ -37,7 +38,8 @@ class Game():
 		#0=clear_path,2=wall,1=coin,3=invalid
 		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
 		self.memory=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,2,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[0,0,0,0,0,0,0,0,0,0,2,3,3,3,3,3,3,2,0,0,0,0,0,0,0,0,0,0],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
-
+		self.grid[14,5]=2
+		self.grid[14,22]=2
 		#initialize entities
 		self.entities = list()
 		self.init_entities()
@@ -46,8 +48,13 @@ class Game():
 		self.reset()
 		
 	def reset(self):
+		number_of_cheeese_eaten=0
 		self.frame_iteration = 0
 		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
+		self.grid[14,5]=2
+		self.grid[14,22]=2
+		self.memory=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,2,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[0,0,0,0,0,0,0,0,0,0,2,3,3,3,3,3,3,2,0,0,0,0,0,0,0,0,0,0],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
+
 		self.score=0
 		self.graphics.reset()
 		self.graphics.get_grid(self.grid)
@@ -86,49 +93,217 @@ class Game():
 		# pink=PinkGhost(os.path.join('Assets', 'pink-tmp.png'),self.grid,name="pinky")
 		# x,y=self.graphics.grid_to_window(row=11,col=13)
 		# pink.default_x=x
-		# pink.default_y=y+48-6
+		# pink.default_y=y+48
 		# pink.set_rect(pink.default_x,pink.default_y,rect_dim,rect_dim)
 		# pink.set_pos_in_grid()
 		# self.entities.append(pink)
+	def get_closest_cheese(self):
+		#parte da pacman. controlla se a c'è un formaggio su,poi giù, sx e dx. se non c'è parte la ricorsione
+		pacman=self.entities[ENTITIES.PACMAN.value]
+		y=pacman.pos_in_grid_y
+		x=pacman.pos_in_grid_x
+		cheese_y=-1
+		cheese_x=-1
+		cheese_y,cheese_x=self._recursive_cheese(y,x)
+		#print("formaggio:"+str(cheese_y)+","+str(cheese_x))
+		#input()
+		cheese_top=0
+		cheese_left=0
+		if y<cheese_y:
+			cheese_top=1
+		if x>cheese_x:
+			cheese_left=1		
+		return cheese_top,cheese_left
+	def _recursive_cheese(self,y,x):
+		next_x=x
+		next_y=y
+		next_y=y-1 #up
+		
+		found1=self._get_neightbour_cheese(next_y,next_x)
+		if found1:
+			#print("FOUND")
+			result=[next_y,next_x]
+			return result[:]
+		next_y=y+1 #down
+		found2=self._get_neightbour_cheese(next_y,next_x)
+		if found2:
+			result=[next_y,next_x]
+			return result[:]
+		next_y=y
+		next_x=x-1 #left
+		found3=self._get_neightbour_cheese(next_y,next_x)
+		if found3:
+			result=[next_y,next_x]
+			return result[:]
+		next_x=x+1 #right
+		found4=self._get_neightbour_cheese(next_y,next_x)
+		if found4:
+			result=[next_y,next_x]
+			return result[:]
+			
+		#print("non ho trovato niente")
+		
+		if found1 == 0:
+			return self._recursive_cheese(y-1,x)
+		if found2 == 0:
+			return self._recursive_cheese(y+1,x)
+		if found3 == 0:
+			return self._recursive_cheese(y,x-1)
+		if found4 == 0:
+			return self._recursive_cheese(y,x+1)
+		return [-1,-1] #dovrebbe essere impossibile ma non si sa mai :)
+		
+	def _get_neightbour_cheese(self,next_y,next_x):
+			if next_y<0 or next_y>30 or next_x<0 or next_x>27:
+				return -1
+			return int(self.grid[next_y][next_x]==1)
+		
+	def get_neightbours(self,entity):
+		y=entity.pos_in_grid_y
+		x=entity.pos_in_grid_x
+		next_x=x
+		next_y=y
+		result= []
+		#UP
+		next_y=y-1
+		if next_y<0:
+			result.append(0)
+		else:
+			result.append(self.get_neightbour(next_y,next_x))
+		#DOWN
+		next_y=y+1
+		if next_y>30:
+			result.append(0)
+		else:
+			result.append(self.get_neightbour(next_y,next_x))
+		
+		next_y=y
+		#LEFT
+		next_x=x-1
+		if next_y==14 and next_x==0: #tp
+			result.append(1)
+		elif next_x<0:
+			result.append(0)
+		else:
+			result.append(self.get_neightbour(next_y,next_x))
+		
+		#RIGHT
+		next_x=x+1
+		if next_y==14 and next_x==27: #tp
+			result.append(1)
+		elif next_x>27:
+			result.append(0)
+		else:
+			result.append(self.get_neightbour(next_y,next_x))		
+		
+		return result
 	
+	def get_neightbour(self,neightbour_y,neightbour_x): #gli ho ordinati così affinché l'ai faccia il ragionamento: grande->meglio
+		if self.grid[neightbour_y,neightbour_x]>=2:
+			return 0
+		if self.grid[neightbour_y,neightbour_x]==0:
+			return 1
+		if self.grid[neightbour_y,neightbour_x]==1:
+			return 2
+		
 	def check_ghost_is_coming(self,entity): #check if ghost is in line of sight 
 		pacman=self.entities[0]
 		py=pacman.pos_in_grid_y
 		px=pacman.pos_in_grid_x
 		ey=entity.pos_in_grid_y
 		ex=entity.pos_in_grid_x
-		height=60
-		width=16
-		entity_long_rect_y= pygame.Rect(entity.rect.x-pacman.rect.height/2,entity.rect.y-height+entity.rect.width/2,width,height*2)
-		pacman_long_rect_y= pygame.Rect(pacman.rect.x-entity.rect.height/2,pacman.rect.y-height+pacman.rect.width/2,width,height*2)
-		entity_long_rect_x= pygame.Rect(entity.rect.x-height+entity.rect.width/2,entity.rect.y-entity.rect.height/2,height*2,width)
-		pacman_long_rect_x= pygame.Rect(pacman.rect.x-height+pacman.rect.width/2,pacman.rect.y-pacman.rect.height/2,height*2,width)
-		y=0
 		x=0
-		if entity_long_rect_y.colliderect(pacman_long_rect_y):
-			#pygame.draw.rect(self.graphics.WIN,(200,0,0),entity_long_rect_y)
-			#pygame.draw.rect(self.graphics.WIN,(255,0,0),pacman_long_rect_y)
-			#pygame.display.update()
-			#if entity.facing==FACING.SOUTH and py > ey:
-				#return True
-			y=1
-				#print("kek s")
-			#if entity.facing==FACING.NORTH and py < ey:
-				#return True
-				#y=1
-				#print("kek n")
-		if entity_long_rect_x.colliderect(pacman_long_rect_x):
-			#pygame.draw.rect(self.graphics.WIN,(0, 0, 255),entity_long_rect_x)
-			#pygame.draw.rect(self.graphics.WIN,(0,255,0),pacman_long_rect_x)
-			#pygame.display.update()
-			#if entity.facing==FACING.WEST and px < ex:
-				#return True
-			x=1
-				#print("kek w")
-			#if entity.facing==FACING.EAST and px > ex:
-				#return True
-			#x=1
-				#print("kek e")
+		y=0
+		#check Y danger u
+		if px==ex and entity.facing==FACING.SOUTH: 
+			dist=py-ey
+			if dist>0:
+				i=0
+				#print("fantasma sopra")
+				while i<dist:
+					if self.grid[py-i][px]==2:
+						y=0
+						break
+					else:
+						y=1
+						i+=1
+		#check Y danger down
+		if px==ex and entity.facing==FACING.NORTH: 
+			dist=ey-py
+			if dist>0:
+				i=0
+				#print("fantasma sotto")
+				while i<dist:
+					if self.grid[py+i][px]==2:
+						y=0
+						break
+					else:
+						y=1
+						#y=2
+						i+=1
+		#check X danger left
+		if py==ey and entity.facing==FACING.EAST: 
+			dist=px-ex
+			if dist>0:
+				i=0
+				#print("fantasma sinistra")
+				while i<dist:
+					if px==0:
+						break
+					if	self.grid[py][px-i]==2:
+						x=0
+						break
+					else:
+						x=1
+						i+=1
+		#check x danger right
+		if py==ey and entity.facing==FACING.WEST: 
+			dist=ex-px
+			if dist>0:
+				i=0
+				#print("fantasma destra")
+				while i<dist:
+					if px==27:
+						break
+					if	self.grid[py][px+i]==2:
+						x=0
+						break
+					else:
+						#x=2
+						x=1
+						i+=1
+		# height=90
+		# width=16
+		# entity_long_rect_y= pygame.Rect(entity.rect.x-pacman.rect.height/2,entity.rect.y-height+entity.rect.width/2,width,height*2)
+		# pacman_long_rect_y= pygame.Rect(pacman.rect.x-entity.rect.height/2,pacman.rect.y-height+pacman.rect.width/2,width,height*2)
+		# entity_long_rect_x= pygame.Rect(entity.rect.x-height+entity.rect.width/2,entity.rect.y-entity.rect.height/2,height*2,width)
+		# pacman_long_rect_x= pygame.Rect(pacman.rect.x-height+pacman.rect.width/2,pacman.rect.y-pacman.rect.height/2,height*2,width)
+		# y=0
+		# x=0
+		# if entity_long_rect_y.colliderect(pacman_long_rect_y):
+			# pygame.draw.rect(self.graphics.WIN,(200,0,0),entity_long_rect_y)
+			# pygame.draw.rect(self.graphics.WIN,(255,0,0),pacman_long_rect_y)
+			# pygame.display.update()
+			# #if entity.facing==FACING.SOUTH and py > ey:
+				# #return True
+			# y=1
+				# #print("kek s")
+			# #if entity.facing==FACING.NORTH and py < ey:
+				# #return True
+				# #y=1
+				# #print("kek n")
+		# if entity_long_rect_x.colliderect(pacman_long_rect_x):
+			# pygame.draw.rect(self.graphics.WIN,(0, 0, 255),entity_long_rect_x)
+			# pygame.draw.rect(self.graphics.WIN,(0,255,0),pacman_long_rect_x)
+			# pygame.display.update()
+			# #if entity.facing==FACING.WEST and px < ex:
+				# #return True
+			# x=1
+				# #print("kek w")
+			# #if entity.facing==FACING.EAST and px > ex:
+				# #return True
+			# #x=1
+				# #print("kek e")
 		return y,x, entity.facing
 	
 	def check_pacman_is_goodboy(self,ghost_facing): #check if pacman is in danger but he is running away
@@ -224,6 +399,7 @@ class Game():
 			#print(self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x])
 			if self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]==1:
 				cheese_eaten=True
+				number_of_cheeese_eaten+=1
 			self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]=0
 			self.memory[entity.pos_in_grid_y][entity.pos_in_grid_x]=1
 			
@@ -362,7 +538,7 @@ class Game():
 			#return #il timer lo abilito nella release, mentre sviluppo e' una perdita di tempo
 			pass 
 		
-		if self.graphics.frame_iteration>self.graphics.old_iter+2:
+		if self.graphics.frame_iteration>self.graphics.old_iter+6:
 			self.graphics.old_iter=self.graphics.frame_iteration
 			#print("muovo")
 			for entity in self.entities: #for each ghost
@@ -390,10 +566,15 @@ class Game():
 		game_over=0
 		#print("sono a: "+str(pacman.pos_in_grid_y)+","+str(pacman.pos_in_grid_x)+" e voglio andare " + str(action))
 		#print("game: "+str(action))
+		if self.have_i_been_here_before(action,self.entities[ENTITIES.PACMAN.value]):
+				reward-=20
 		cheese_eaten= self.move_entity(pacman,action)
 		if cheese_eaten:
-			self.score+=10
-			reward=20
+			self.score+=10 + pow(1.03,cheese_eaten)
+			reward=50
+		if self.check_game_won():
+			self.score+=1000
+			game_over=1
 		#if not self.can_move(action,entity) and action!= Actions.HALT:
 		#	reward+=-3
 		#	print("can't move: "+ Actions(action).name)
@@ -411,11 +592,9 @@ class Game():
 			if danger_x:# and not is_goodboy:
 				reward+=-40
 			#if is_goodboy:
-			#	reward+=10
-			if self.have_i_been_here_before(action,entity):
-				reward-=2
+			#	reward+=10s
 		if self.check_game_over():
-			reward=-300
+			reward=-500
 			game_over=1
 			self.n_games+=1
 		self.graphics.draw_window(self.debug)
@@ -505,7 +684,7 @@ class Game():
 			next_x=x+1
 		
 		if action == Actions.HALT:
-			return 0
+			return 1
 		
 		if next_y<0 or next_y>30 or next_x<0 or next_x>27:
 			return 0

@@ -8,7 +8,7 @@ from helper import plot
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001
-TARGET_GAMES=70
+TARGET_GAMES=150
 class Agent:
 
 	def __init__(self):
@@ -16,7 +16,8 @@ class Agent:
 		self.epsilon = 0.0 # randomness
 		self.gamma = 0.5 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(9, 160, 5)
+		self.model = Linear_QNet(10, 300, 5)
+		#meglio avere più parametri boolean che uno int, a quanto pare. [?] ricontrollare con nuova funzione check_ghost_is_coming
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
 	def get_state(self, game):
@@ -24,26 +25,25 @@ class Agent:
 		pacman=game.entities[ENTITIES.PACMAN.value]
 		red =game.entities[ENTITIES.RED.value]
 		#pink=game.entities[ENTITIES.PINK.value]
-		can_move_arr=[int(game.can_move(Actions.LEFT,pacman)),int(game.can_move(Actions.RIGHT,pacman)),int(game.can_move(Actions.UP,pacman)),int(game.can_move(Actions.DOWN,pacman))]
-		#neightbours_memory=[int(game.have_i_been_here_before(Actions.LEFT,pacman)),int(game.have_i_been_here_before(Actions.RIGHT,pacman)),int(game.have_i_been_here_before(Actions.UP,pacman)),int(game.have_i_been_here_before(Actions.DOWN,pacman))]
+		#can_move_arr=[int(game.can_move(Actions.LEFT,pacman)),int(game.can_move(Actions.RIGHT,pacman)),int(game.can_move(Actions.UP,pacman)),int(game.can_move(Actions.DOWN,pacman))]
+		neightbours=game.get_neightbours(pacman)
 		
 		red_top=int(red.pos_in_grid_y > pacman.pos_in_grid_y)
 		#pink_top=pink.pos_in_grid_y > pacman.pos_in_grid_y
 		red_left=int(red.pos_in_grid_x < pacman.pos_in_grid_x)
 		#pink_left=pink.pos_in_grid_x < pacman.pos_in_grid_x
 		#print(str(can_move_arr))
-		cheese_list=[]
-		for action in Actions:
-			if action != Actions.HALT:
-				cheese_list.append(game.cheese_per_action(action,pacman))
-		biggest=cheese_list.index(max(cheese_list))
+		#cheese_list=[]
+		#for action in Actions:
+		#	if action != Actions.HALT:
+		#		cheese_list.append(game.cheese_per_action(action,pacman))
+		#biggest=cheese_list.index(max(cheese_list))
 		#print(cheese_list)
 		#print(biggest)
 		red_danger_y,red_danger_x,ghost_facing=game.check_ghost_is_coming(red)
 		#red_danger_y= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		#red_danger_x= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
-		#pink_danger_y= pink.pos_in_grid_y == pacman.pos_in_grid_y
-		#pink_danger_x= pink.pos_in_grid_y == pacman.pos_in_grid_y
+		#pink_danger_y,pink_danger_x,ghost_facing=game.check_ghost_is_coming(pink)
 		#state=[int(red_danger_y),int(red_danger_x),int(pink_danger_y),int(pink_danger_y),*can_move_arr]
 		#state=[red_top,red_left,red_danger_y,red_danger_x,*can_move_arr]
 		#print(red_danger)
@@ -51,10 +51,19 @@ class Agent:
 		#if red_danger_y:
 		#	print("ROSSO VICINO Y")
 		#if red_danger_x:
-		#	print("ROSSO VICINO Y")
-		state=[*can_move_arr,red_danger_y,red_danger_x,red_top,red_left,biggest]#,*neightbours_memory]
+		#	print("ROSSO VICINO X")
+		#state=[*can_move_arr,red_danger_y,red_danger_x,red_top,red_left,biggest]#,*neightbours_memory]
 		#state=[red_danger_y,red_danger_x,red_top,red_left]
+		#state=[*can_move_arr,red_danger_y,red_danger_x,biggest]#,*neightbours_memory]
+		#state=[*can_move_arr,red_danger_y,red_danger_x,biggest,red_top,red_left]#,*neightbours_memory]
 		
+		cheese_top,cheese_left=game.get_closest_cheese()
+		#print(cheese_top,cheese_left)
+
+		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left]
+		state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left]
+		#state=[*can_move_arr,red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,biggest]#,*neightbours_memory]
+
 		#print(state)
 		#state =[int(red_top),int(red_left),int(pink_top),int(pink_left),biggest]
 		#state =[biggest]
@@ -275,6 +284,8 @@ def train():
 			# print("DANGER Y")
 		# if state_old[5]:
 			# print("DANGER X")			
+		#print(*state_old[:4])
+		#input()
 		reward, done, score = game.play_step(Actions(final_move))
 		
 		#print(reward)

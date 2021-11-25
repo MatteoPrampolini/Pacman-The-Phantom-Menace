@@ -19,7 +19,7 @@ GOLD= (255,215,0)
 COIN= (224, 209, 209)
 YELLOW = (255,241,0)
 
-FPS = 200
+FPS = 600
 class PacGraphic:
 		
 	def __init__(self,WIDTH,HEIGHT):
