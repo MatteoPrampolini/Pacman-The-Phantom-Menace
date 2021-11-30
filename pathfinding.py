@@ -41,6 +41,8 @@ class solver():
 		m=self.m
 		start=self.start
 		end=self.end
+		
+		#print(start,end)
 		for i in range(len(a)):
 			m.append([])
 			for j in range(len(a[i])):
