@@ -2,21 +2,29 @@ import torch
 import random, os, time, sys
 import numpy as np
 from collections import deque
+from entities import Pacman
 from game import Game, Actions, ENTITIES, check_for_events
 from model import Linear_QNet, QTrainer
 from helper import plot
 MAX_MEMORY = 100_000
-BATCH_SIZE = 1000
+BATCH_SIZE = 512
 LR = 0.001
-TARGET_GAMES=1000
+TARGET_GAMES=70
+def is_in_turning_point(entity):
+		y=entity.pos_in_grid_y
+		x=entity.pos_in_grid_x
+		turning_points=np.array([[1,1],[1,6],[1,12],[1,15],[1,21],[1,26],[5,1],[5,6],[5,9],[5,12],[5,15],[5,18],[5,21],[5,26],[8,1],[8,6],[8,9],[8,12],[8,15],[8,18],[8,21],[8,26],[11,9],[11,12],[11,15],[11,18],[14,6],[14,9],[14,18],[14,21],[17,9],[17,18],[20,1],[20,6],[20,9],[20,12],[20,15],[20,18],[20,21],[20,26],[23,1],[23,3],[23,6],[23,9],[23,12],[23,15],[23,18],[23,21],[23,24],[23,26],[26,1],[26,3],[26,6],[26,9],[26,12],[26,15],[26,18],[26,21],[26,24],[26,26],[29,1],[29,12],[29,15],[29,26]])
+		result=([y, x] == turning_points).all(1).any()
+		#print(result)
+		return result
 class Agent:
 
 	def __init__(self):
 		self.n_games = 0
 		self.epsilon = 0.0 # randomness
-		self.gamma = 0.5 # discount rate
+		self.gamma = 0.9 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(14, 400, 5)
+		self.model = Linear_QNet(19, 64, 5)
 		#meglio avere più parametri boolean che uno int, a quanto pare. [?] ricontrollare con nuova funzione check_ghost_is_coming
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
@@ -30,9 +38,9 @@ class Agent:
 		neightbours=game.get_neightbours(pacman)
 		
 		red_top=int(red.pos_in_grid_y > pacman.pos_in_grid_y)
-		pink_top=pink.pos_in_grid_y > pacman.pos_in_grid_y
+		pink_top=int(pink.pos_in_grid_y > pacman.pos_in_grid_y)
 		red_left=int(red.pos_in_grid_x < pacman.pos_in_grid_x)
-		pink_left=pink.pos_in_grid_x < pacman.pos_in_grid_x
+		pink_left=int(pink.pos_in_grid_x < pacman.pos_in_grid_x)
 		#print(str(can_move_arr))
 		#cheese_list=[]
 		#for action in Actions:
@@ -41,9 +49,12 @@ class Agent:
 		#biggest=cheese_list.index(max(cheese_list))
 		#print(cheese_list)
 		#print(biggest)
+		red_warning_y,red_warning_x,ghost_facing=game.check_ghost_is_coming2(red)
 		red_danger_y,red_danger_x,ghost_facing=game.check_ghost_is_coming(red)
+		
 		#red_danger_y= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		#red_danger_x= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
+		pink_warning_y,pink_warning_x,ghost_facing=game.check_ghost_is_coming2(pink)
 		pink_danger_y,pink_danger_x,ghost_facing=game.check_ghost_is_coming(pink)
 		#state=[int(red_danger_y),int(red_danger_x),int(pink_danger_y),int(pink_danger_y),*can_move_arr]
 		#state=[red_top,red_left,red_danger_y,red_danger_x,*can_move_arr]
@@ -63,7 +74,10 @@ class Agent:
 		#state=[*neightbours,pink_danger_y,pink_danger_x,pink_top,pink_left,cheese_top,cheese_left]
 
 		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left]
-		state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left]
+		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left]
+		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,pink_danger_y,pink_danger_x,pink_top,pink_left,red_warning_x,red_warning_y,pink_warning_x,pink_warning_y,pacman.invincible]
+		state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left,red_warning_x,red_warning_y,pink_warning_x,pink_warning_y,pacman.invincible]
+
 		#state=[*can_move_arr,red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,biggest]#,*neightbours_memory]
 
 		#print(state)
@@ -89,26 +103,37 @@ class Agent:
 	def train_short_memory(self, state, action, reward, next_state, done):
 		self.trainer.train_step(state, action, reward, next_state, done)
 	
-	def get_action(self, state,is_traning):
-		# random moves: tradeoff exploration / exploitation
-		self.epsilon = TARGET_GAMES - self.n_games
-		#self.epsilon=20 #TOGLIEREEEE
-		final_move = [0,0,0,0,0]
-		#if self.epsilon < 20:
-		#	self.epsilon= 20 # 10% minimum randomness
-		if is_traning and random.randint(0, 2860) <= self.epsilon:
-		#if is_traning and random.randint(0, 200) <= self.epsilon:
-			move = random.randint(0, 4)
-			final_move[move] = 1
-			return final_move
+	def get_action(self, state,is_traning,pacman):
+		
+		if is_in_turning_point(pacman):			
+			
+			# random moves: tradeoff exploration / exploitation
+			self.epsilon = TARGET_GAMES - self.n_games
+			#self.epsilon=f[1] #TOGLIEREEEE
+			#if self.epsilon < 20:
+			#	self.epsilon= 20 # 10% minimum randomness
+			#if is_traning and random.randint(0, 450) <= self.epsilon:
+			final_move = [0,0,0,0,0]
+			if is_traning and random.randint(0, 200) <= self.epsilon:
+				move = random.randint(0, 4)
+				final_move[move] = 1
+				return final_move
+			else:
+				state0 = torch.tensor(state, dtype=torch.float)
+				prediction = self.model(state0)
+				#if is_traning:
+				move = torch.argmax(prediction).item()
+				final_move[move] = 1
+					#print(final_move)
+				return final_move
 		else:
-			state0 = torch.tensor(state, dtype=torch.float)
-			prediction = self.model(state0)
-			#if is_traning:
-			move = torch.argmax(prediction).item()
-			final_move[move] = 1
-				#print(final_move)
-			return final_move
+			#print(pacman.old_action.value)
+			#print(pacman.old_action.value)
+			#print(final_move)
+			#print("continuo"+str(pacman.old_action))
+			return pacman.old_action.value
+			#return final_move
+			pacman.old_action 
  
 def save_complete_model(agent):
 	PATH= os.path.dirname(__file__)
@@ -250,7 +275,7 @@ def train():
 			check_for_events(game)
 		state_old = agent.get_state(game)
 		# get move
-		moves = agent.get_action(state_old,True)
+		moves = agent.get_action(state_old,True,game.entities[0])
 		#print(prediction)
 		if isinstance(moves, list):
 			final_move=moves
@@ -329,3 +354,4 @@ if __name__ == '__main__':
 	os.chdir(PATH)
 	train()
 	#play()
+

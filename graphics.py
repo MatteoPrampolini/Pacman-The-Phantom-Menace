@@ -19,7 +19,6 @@ GOLD= (255,215,0)
 COIN= (224, 209, 209)
 YELLOW = (255,241,0)
 
-FPS = 500
 class PacGraphic:
 		
 	def __init__(self,WIDTH,HEIGHT):
@@ -32,13 +31,20 @@ class PacGraphic:
 		self.font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),25)
 		self.timer=0
 		self.clock = pygame.time.Clock()
+		self.FPS=40
 		
 	def reset(self):
 		self.timer= 0
 		self.frame_iteration=0
 		self.old_iter=0
 		for entity in self.entities:
+			#entity.pos_in_grid_y=entity.default_y
+			#entity.pos_in_grid_x=entity.default_x
 			entity.reset_position()
+			entity.set_pos_in_grid()
+			if entity.name=="pacman":
+				entity.reset_invincibility()
+
 	def get_grid(self,grid):
 		self.grid=grid
 	
@@ -87,7 +93,7 @@ class PacGraphic:
 		self.draw_entities()
 		
 		self.draw_text()
-		self.clock.tick(FPS)
+		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
 		pygame.display.update()
 	
@@ -100,6 +106,8 @@ class PacGraphic:
 				tmp.x=OFFSET_X+column*CELL_DIM
 				if self.grid[row][column]==1:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//4)
+				if self.grid[row][column]==-1:
+					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//2)
 	
 	
 	def draw_text(self):

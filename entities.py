@@ -3,7 +3,7 @@ import os
 import sys
 import numpy as np
 from enum import Enum
-from graphics import CELL_DIM,OFFSET_X,OFFSET_Y,FPS
+from graphics import CELL_DIM,OFFSET_X,OFFSET_Y #,FPS
 import pathfinding
 class FACING(Enum):
 	NORTH = 0
@@ -25,9 +25,10 @@ class Entity:
 		self.default_x=0
 		self.default_y=0
 		self.facing= FACING.EAST
+		self.old_action=Actions.LEFT
 		#self.pos_in_grid_x=0
 		#self.pos_in_grid_y=0
-		self.VEL = 2*FPS/60
+		self.VEL = 1#2*FPS/60
 	def reset_position(self):
 		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
 	
@@ -57,7 +58,18 @@ class Pacman(Entity):
 	def __init__(self,img_path,name="no name"):
 		super().__init__(img_path,name)
 		#self.VEL = int(2*FPS/60)
-		self.VEL=2
+		self.reset_invincibility()
+		#self.VEL=2
+	
+	def set_invincibility_sprite(self):
+		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-super.png'))
+	def set_normal_sprite(self):
+		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-tmp.png'))
+
+	def reset_invincibility(self):
+			self.invincible=0
+			self.invincibility_timestamp=-9999
+			self.set_normal_sprite()
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)
