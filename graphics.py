@@ -54,6 +54,12 @@ class PacGraphic:
 	def update_time(self,time):
 		self.timer=time
 	
+	def highlight_specific_cell(self,y,x):
+		tmp = pygame.Rect(0,0, CELL_DIM, CELL_DIM)
+		tmp.y=OFFSET_Y+y*CELL_DIM			
+		tmp.x=OFFSET_X+x*CELL_DIM
+		pygame.draw.rect(self.WIN,RED,tmp)
+		pygame.display.update()
 
 	def draw_grid(self): #per il debug, non viene chiamata nella versione finale
 		tmp = pygame.Rect(0,0, CELL_DIM, CELL_DIM)

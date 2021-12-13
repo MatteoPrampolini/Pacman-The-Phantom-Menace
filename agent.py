@@ -3,20 +3,15 @@ import random, os, time, sys
 import numpy as np
 from collections import deque
 from entities import Pacman
-from game import Game, Actions, ENTITIES, check_for_events
+from game import Game, Actions, ENTITIES, check_for_events, is_in_turning_point
 from model import Linear_QNet, QTrainer
 from helper import plot
 MAX_MEMORY = 100_000
-BATCH_SIZE = 512
+BATCH_SIZE = 1000
 LR = 0.001
-TARGET_GAMES=70
-def is_in_turning_point(entity):
-		y=entity.pos_in_grid_y
-		x=entity.pos_in_grid_x
-		turning_points=np.array([[1,1],[1,6],[1,12],[1,15],[1,21],[1,26],[5,1],[5,6],[5,9],[5,12],[5,15],[5,18],[5,21],[5,26],[8,1],[8,6],[8,9],[8,12],[8,15],[8,18],[8,21],[8,26],[11,9],[11,12],[11,15],[11,18],[14,6],[14,9],[14,18],[14,21],[17,9],[17,18],[20,1],[20,6],[20,9],[20,12],[20,15],[20,18],[20,21],[20,26],[23,1],[23,3],[23,6],[23,9],[23,12],[23,15],[23,18],[23,21],[23,24],[23,26],[26,1],[26,3],[26,6],[26,9],[26,12],[26,15],[26,18],[26,21],[26,24],[26,26],[29,1],[29,12],[29,15],[29,26]])
-		result=([y, x] == turning_points).all(1).any()
-		#print(result)
-		return result
+TARGET_GAMES=80
+
+
 class Agent:
 
 	def __init__(self):
@@ -24,7 +19,7 @@ class Agent:
 		self.epsilon = 0.0 # randomness
 		self.gamma = 0.9 # discount rate
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(19, 64, 5)
+		self.model = Linear_QNet(10, 256, 5)
 		#meglio avere più parametri boolean che uno int, a quanto pare. [?] ricontrollare con nuova funzione check_ghost_is_coming
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
@@ -32,10 +27,11 @@ class Agent:
 		
 		pacman=game.entities[ENTITIES.PACMAN.value]
 		red =game.entities[ENTITIES.RED.value]
+		
 		pink=game.entities[ENTITIES.PINK.value]
 		#pink=game.entities[ENTITIES.RED.value] #DA TOGLIEREEEEEE
 		#can_move_arr=[int(game.can_move(Actions.LEFT,pacman)),int(game.can_move(Actions.RIGHT,pacman)),int(game.can_move(Actions.UP,pacman)),int(game.can_move(Actions.DOWN,pacman))]
-		neightbours=game.get_neightbours(pacman)
+		#neightbours=game.get_neightbours(pacman)
 		
 		red_top=int(red.pos_in_grid_y > pacman.pos_in_grid_y)
 		pink_top=int(pink.pos_in_grid_y > pacman.pos_in_grid_y)
@@ -50,12 +46,12 @@ class Agent:
 		#print(cheese_list)
 		#print(biggest)
 		red_warning_y,red_warning_x,ghost_facing=game.check_ghost_is_coming2(red)
-		red_danger_y,red_danger_x,ghost_facing=game.check_ghost_is_coming(red)
+		#red_danger_y,red_danger_x,ghost_facing=game.check_ghost_is_coming(red)
 		
 		#red_danger_y= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		#red_danger_x= int(red.pos_in_grid_y == pacman.pos_in_grid_y)
 		pink_warning_y,pink_warning_x,ghost_facing=game.check_ghost_is_coming2(pink)
-		pink_danger_y,pink_danger_x,ghost_facing=game.check_ghost_is_coming(pink)
+		#pink_danger_y,pink_danger_x,ghost_facing=game.check_ghost_is_coming(pink)
 		#state=[int(red_danger_y),int(red_danger_x),int(pink_danger_y),int(pink_danger_y),*can_move_arr]
 		#state=[red_top,red_left,red_danger_y,red_danger_x,*can_move_arr]
 		#print(red_danger)
@@ -70,13 +66,29 @@ class Agent:
 		#state=[*can_move_arr,red_danger_y,red_danger_x,biggest,red_top,red_left]#,*neightbours_memory]
 		
 		cheese_top,cheese_left=game.get_closest_cheese()
-		#print(cheese_top,cheese_left)
-		#state=[*neightbours,pink_danger_y,pink_danger_x,pink_top,pink_left,cheese_top,cheese_left]
 
+		#red_warning=game.is_ghost_in_the_corner(red,pacman)
+		#pink_warning=game.is_ghost_in_the_corner(pink,pacman)
 		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left]
 		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left]
 		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,pink_danger_y,pink_danger_x,pink_top,pink_left,red_warning_x,red_warning_y,pink_warning_x,pink_warning_y,pacman.invincible]
-		state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left,red_warning_x,red_warning_y,pink_warning_x,pink_warning_y,pacman.invincible]
+		
+		# quello da 23 con corner
+		# state=[red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,*red_warning,*pink_warning,*neightbours,red_top,red_left,pink_top,pink_left,cheese_top,cheese_left,pacman.invincible]
+		#quello con rect
+		#state=[red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,red_warning_y,red_warning_x,pink_warning_y,pink_warning_x,*neightbours,red_top,red_left,pink_top,pink_left,cheese_top,cheese_left,pacman.invincible]
+		#rect no inv
+		#state=[red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,red_warning_y,red_warning_x,pink_warning_y,pink_warning_x,*neightbours,red_top,red_left,pink_top,pink_left,cheese_top,cheese_left]
+		#state=[red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,*red_warning,*pink_warning,*neightbours,red_top,red_left,pink_top,pink_left,cheese_top,cheese_left]
+		#possibilities_red= game.can_go_in_there_before_ghost(red,pacman)
+		#possibilities_pink= game.can_go_in_there_before_ghost(pink,pacman)
+		#print(possibilities_pink)
+		#print(game.possibilities)
+		#state= [red_warning_y,red_warning_x,pink_warning_y,pink_warning_x,red_top,red_left,pink_top,pink_left,*game.possibilities,cheese_top,cheese_left]
+		state= [*game.possibilities,cheese_top,cheese_left]
+
+		
+		#state=[*neightbours,red_danger_y,red_danger_x,red_top,red_left,cheese_top,cheese_left,pink_danger_y,pink_danger_x,pink_top,pink_left,red_warning_x,red_warning_y,pink_warning_x,pink_warning_y,pacman.invincible]
 
 		#state=[*can_move_arr,red_danger_y,red_danger_x,pink_danger_y,pink_danger_x,biggest]#,*neightbours_memory]
 
@@ -85,6 +97,8 @@ class Agent:
 		#state =[biggest]
 
 		#print(state)
+
+		#al posto dei danger e warning restituire un array boolean che dice se pacman arriva prima a nodo di ghost red.
 		return np.array(state, dtype=int)
 
 	def remember(self, state, action, reward, next_state, done):
@@ -104,36 +118,37 @@ class Agent:
 		self.trainer.train_step(state, action, reward, next_state, done)
 	
 	def get_action(self, state,is_traning,pacman):
-		
-		if is_in_turning_point(pacman):			
-			
+			#print(pacman)
+			#am_i_running_down= state[0]+state[1]+state[2]+state[3]
+			#am_i_running_down= state[4]+state[5]+state[6]+state[7]
+			#se siamo in pericolo puoi cambiare direzione, altrimenti scegli quella predefinita fino al prossimo incrocio
+			#am_i_running_down= state[0]+state[1]+state[2]+state[3]+state[4]+state[5]+state[6]+state[7]+state[8]+state[9]+state[10]+state[11]
+
+			#if not is_in_turning_point(pacman):
+					#print("old:"+str(pacman.old_action.value))
+					#print(pacman.old_action.value)
+					#print(final_move)
+					#print("continuo"+str(pacman.old_action))
+			#		return pacman.old_action.value
 			# random moves: tradeoff exploration / exploitation
-			self.epsilon = TARGET_GAMES - self.n_games
-			#self.epsilon=f[1] #TOGLIEREEEE
+			#self.epsilon = TARGET_GAMES - self.n_games
+			self.epsilon=0 #TOGLIEREEEE
 			#if self.epsilon < 20:
 			#	self.epsilon= 20 # 10% minimum randomness
 			#if is_traning and random.randint(0, 450) <= self.epsilon:
 			final_move = [0,0,0,0,0]
 			if is_traning and random.randint(0, 200) <= self.epsilon:
-				move = random.randint(0, 4)
-				final_move[move] = 1
-				return final_move
+					move = random.randint(0, 4)
 			else:
-				state0 = torch.tensor(state, dtype=torch.float)
-				prediction = self.model(state0)
-				#if is_traning:
-				move = torch.argmax(prediction).item()
-				final_move[move] = 1
-					#print(final_move)
-				return final_move
-		else:
-			#print(pacman.old_action.value)
-			#print(pacman.old_action.value)
+					state0 = torch.tensor(state, dtype=torch.float)
+					prediction = self.model(state0)
+					#if is_traning:
+					move = torch.argmax(prediction).item()
+			final_move[move] = 1
 			#print(final_move)
-			#print("continuo"+str(pacman.old_action))
-			return pacman.old_action.value
+			return final_move
 			#return final_move
-			pacman.old_action 
+			#pacman.old_action 
  
 def save_complete_model(agent):
 	PATH= os.path.dirname(__file__)
@@ -192,19 +207,16 @@ def write_record(record):
 	model_folder_path = 'model'
 	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
 	file_name = os.path.join(PATH,model_folder_path,'record.txt')
-	f = open(file_name, "w")
-	f.write(str(record))
-	f.close()
+	with open(file_name, "w") as f:
+		f.write(str(record))
 
 def read_record():
 	model_folder_path = 'model'
 	#ricordo che model.pth DOVREBBE contenere gli state_dict, quindi il modello parziale.
 	file_name = os.path.join(PATH,model_folder_path,'record.txt')
 	if os.path.exists(file_name):
-		f = open(file_name, "r")
-		record=int(f.readline())
-		#print(record)
-		f.close()
+		with open(file_name, "r") as f:
+			record=int(f.readline())
 	else:
 		record=0
 	return record
@@ -276,20 +288,21 @@ def train():
 		state_old = agent.get_state(game)
 		# get move
 		moves = agent.get_action(state_old,True,game.entities[0])
+		final_move=moves
 		#print(prediction)
-		if isinstance(moves, list):
-			final_move=moves
-		else:
-			maybe_action=[0,0,0,0,0]
-			sorted_indexes= torch.argsort(moves, descending= True)
-			i=0
-			maybe_action[sorted_indexes[i]]=1
-			while game.can_move(maybe_action):
-				maybe_action=[0,0,0,0,0]
-				maybe_action[sorted_indexes[i]]=1
-				i+=1
-				#print("cambio azione perche' non fattibile")
-			final_move=maybe_action
+		# if isinstance(moves, list):
+		# 	final_move=moves
+		# else:
+		# 	maybe_action=[0,0,0,0,0]
+		# 	sorted_indexes= torch.argsort(moves, descending= True)
+		# 	i=0
+		# 	maybe_action[sorted_indexes[i]]=1
+		# 	while game.can_move(maybe_action):
+		# 		maybe_action=[0,0,0,0,0]
+		# 		maybe_action[sorted_indexes[i]]=1
+		# 		i+=1
+		# 		#print("cambio azione perche' non fattibile")
+		# 	final_move=maybe_action
 
 		# perform move and get new state
 		
