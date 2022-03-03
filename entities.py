@@ -24,11 +24,13 @@ class Entity:
 		#self.set_rect(x,y,*self.IMAGE.get_size())
 		self.default_x=0
 		self.default_y=0
-		self.facing= FACING.EAST
-		self.old_action=Actions.LEFT
+		self.facing= FACING.WEST
+		self.old_action=Actions.UP
 		#self.pos_in_grid_x=0
 		#self.pos_in_grid_y=0
 		self.VEL = 1#2*FPS/60
+	
+
 	def reset_position(self):
 		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
 	
@@ -57,6 +59,7 @@ class Entity:
 class Pacman(Entity):
 	def __init__(self,img_path,name="no name"):
 		super().__init__(img_path,name)
+		
 		#self.VEL = int(2*FPS/60)
 		self.reset_invincibility()
 		#self.VEL=2
@@ -77,9 +80,18 @@ class Ghost(Entity):
 		#self.VEL = int(1*FPS/60)
 		self.VEL=1
 		self.last_action=Actions.HALT
+		self.distance_from_pacman=12
+		self.old_pos=[self.default_y,self.default_x]
+		
 		self.old_path=None
 	def get_new_path(self,pacman):
 		pass
+
+	def reset_position(self):
+		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
+		self.old_distance=12
+		self.old_pos=[self.default_y,self.default_x]
+	
 	
 class RedGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
@@ -91,11 +103,12 @@ class RedGhost(Ghost):
 		pacman_facing=pacman.facing
 		x=self.pos_in_grid_x
 		y=self.pos_in_grid_y
-		p = self.solver.get_path(py,px,y,x)
+		self.old_distance=self.distance_from_pacman
+		self.old_pos=[y,x]
+		p,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
 		if not p:
 			return (-1,-1)
-		if p:
-			return p
+		return p
 
 class PinkGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
@@ -144,7 +157,8 @@ class PinkGhost(Ghost):
 				i-=1
 		x=self.pos_in_grid_x
 		y=self.pos_in_grid_y
-		p = self.solver.get_path(py,px,y,x)
+		self.old_pos=[y,x]
+		p,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
 		if not p:
 			return (-2,-2)
 		if p:
