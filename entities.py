@@ -82,6 +82,7 @@ class Ghost(Entity):
 		self.last_action=Actions.HALT
 		self.distance_from_pacman=12
 		self.old_pos=[self.default_y,self.default_x]
+		self.path=[]
 		
 		self.old_path=None
 	def get_new_path(self,pacman):
@@ -105,10 +106,10 @@ class RedGhost(Ghost):
 		y=self.pos_in_grid_y
 		self.old_distance=self.distance_from_pacman
 		self.old_pos=[y,x]
-		p,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
-		if not p:
-			return (-1,-1)
-		return p
+		self.path,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
+		#if len(self.path)<=1:
+		return self.path[0]
+		#return self.path
 
 class PinkGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
@@ -158,8 +159,5 @@ class PinkGhost(Ghost):
 		x=self.pos_in_grid_x
 		y=self.pos_in_grid_y
 		self.old_pos=[y,x]
-		p,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
-		if not p:
-			return (-2,-2)
-		if p:
-			return p
+		self.path,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
+		return self.path[0]

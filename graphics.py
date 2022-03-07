@@ -98,7 +98,7 @@ class PacGraphic:
 		self.draw_coins()
 		self.draw_entities()
 		
-		self.draw_text(reward)
+		#self.draw_text(reward)
 		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
 		pygame.display.update()

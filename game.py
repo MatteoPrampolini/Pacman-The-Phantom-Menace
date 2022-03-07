@@ -68,7 +68,7 @@ class Game():
 		self.frame_iteration = 0
 		self.game_started= False
 		self.graphics = gp.PacGraphic(w,h) #questa classe gestisce tutto cio' che e' grafico.
-		self.graphics.FPS=60 #MAX FPS
+		self.graphics.FPS=600 #MAX FPS
 		#0=clear_path,2=wall,1=coin,3=invalid
 		self.grid=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,1,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,2,2,2,2,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,2,2,2,0,2,2,0,2,2,2,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[0,0,0,0,0,0,1,0,0,0,2,3,3,3,3,3,3,2,0,0,0,1,0,0,0,0,0,0],[2,2,2,2,2,2,1,2,2,0,2,3,3,3,3,3,3,2,0,2,2,1,2,2,2,2,2,2],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,0,0,0,0,0,0,0,0,0,2,2,1,2,3,3,3,3,3],[3,3,3,3,3,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,3,3,3,3,3],[2,2,2,2,2,2,1,2,2,0,2,2,2,2,2,2,2,2,0,2,2,1,2,2,2,2,2,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,2,2,2,2,1,2,2,2,2,2,1,2,2,1,2,2,2,2,2,1,2,2,2,2,1,2],[2,1,1,1,2,2,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,2,2,1,1,1,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,2,2,1,2,2,1,2,2,1,2,2,2,2,2,2,2,2,1,2,2,1,2,2,1,2,2,2],[2,1,1,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,2,2,2,2,2,2,2,2,2,2,1,2,2,1,2,2,2,2,2,2,2,2,2,2,1,2],[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
 		self.memory=np.array([[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,0,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,2,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[0,0,0,0,0,0,0,0,0,0,2,3,3,3,3,3,3,2,0,0,0,0,0,0,0,0,0,0],[2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,0,0,0,0,0,0,0,0,0,2,2,0,2,3,3,3,3,3],[3,3,3,3,3,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,3,3,3,3,3],[2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,2,2,2,2,0,2,2,2,2,2,0,2,2,0,2,2,2,2,2,0,2,2,2,2,0,2],[2,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,2,2,0,2,2,0,2,2,0,2,2,2,2,2,2,2,2,0,2,2,0,2,2,0,2,2,2],[2,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2],[2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]])
@@ -116,11 +116,12 @@ class Game():
 		self.debug=False
 		self.is_running=True
 		self.is_game_over=False
-		self.possibilities=[1,1,1,1]
+		#self.possibilities=[1,1,1,1]
+		self.possibilities=[-1,-1,-1,-1]
 		#self.in_corner=[0,0,0,0]
 		self.red_in_corner=[0,0,0,0]
 		self.pink_in_corner=[0,0,0,0]
-		self.can_go_in_there_before_ghost()
+		self.can_go_in_there_before_ghost_new()
 	def set_powerups(self):
 			self.grid[3,1]=-1
 			self.grid[3,26]=-1
@@ -192,6 +193,65 @@ class Game():
 		pinkx=pink.pos_in_grid_x
 		self.red_dist=float_sqrt(pow(abs(py-ry),2)+pow(abs(px-rx),2))#round(float_sqrt(pow(abs(py-ry),2)+pow(abs(px-rx),2)))
 		self.pink_dist=float_sqrt(pow(abs(py-ry),2)+pow(abs(px-rx),2))#round(float_sqrt(pow(abs(py-pinky),2)+pow(abs(px-pinkx),2)))
+	def can_go_in_there_before_ghost_new(self):
+		py=self.entities[0].pos_in_grid_y
+		px=self.entities[0].pos_in_grid_x
+		red=self.entities[1]
+		pink=self.entities[2]
+		self.possibilities=[99,99,99,99]
+		#calculate delta_pacman_tile
+		delta_pacman_tile=[0,0,0,0]
+		four_direction=self.where_entity_is_looking(py,px)
+		for i,coords in enumerate(four_direction):
+			dist=float_sqrt(pow(abs(py-coords[0]),2)+pow(abs(px-coords[1]),2)) #in questo caso il calcolo è preciso perché sullo stesso asse
+			#dists_from_looking_at=np.append(dists_from_looking_at, np.array([[i,dist]]))
+			delta_pacman_tile[i]=dist
+		
+		#calculate delta_ghost_tile, the smallest will be put in self.possibilities
+		for ghost in [red,pink]:
+			ghost_looking_at=self.where_entity_is_looking(ghost.pos_in_grid_y,ghost.pos_in_grid_x)
+			#self.possibilities
+			for i in range(4):
+				#if i==ghost.facing.value and (ghost_looking_at[ghost.facing.value][0],ghost_looking_at[ghost.facing.value][1]) in ghost.path: #and ((ghost_looking_at[i][0],ghost_looking_at[i][1]) != (ghost.pos_in_grid_x,ghost.pos_in_grid_y)):
+				
+				if (four_direction[i][0],four_direction[i][1]) in ghost.path or (four_direction[i][0],four_direction[i][1])==(py,px): #and ((ghost_looking_at[i][0],ghost_looking_at[i][1]) != (ghost.pos_in_grid_x,ghost.pos_in_grid_y)):
+					#print("nel percorso",str(i))
+					#if (ghost_looking_at[i][0],ghostm_looking_at[i][1]) == (four_direction[i][0],four_direction[i][1]): #in four_direction:
+					#sub
+					#print("nel percorso",str(i))
+					delta_ghost_tile=ghost.distance_from_pacman-delta_pacman_tile[i]-1
+				else:
+					delta_ghost_tile=ghost.distance_from_pacman+delta_pacman_tile[i]-1
+					#print("not sos")
+					#add
+					#if tile<=ghost<=pacman o pacman<=ghost<=tile
+					#print(self.ghost_between_tile_pacman(ghost,four_direction[i][0],four_direction[i][0],i),i)
+					if (self.ghost_between_tile_pacman(ghost,four_direction[i][0],four_direction[i][1],i)):
+						delta_ghost_tile=ghost.distance_from_pacman-delta_pacman_tile[i]-1 #non è la vera dist ma penso vada bene ai fini del reward
+						#print(ghost.name,"mezzo",i)
+				
+					#	print("tile non in path",str(i))
+					#else:
+					
+					#	print("fantasma superato tile",str(i))
+						#delta_ghost_tile=ghost.distance_from_pacman+delta_pacman_tile[i]-1
+
+					#print("ez clap",str(i),str(delta_ghost_tile))
+				
+				#print(delta_ghost_tile)
+
+				#FIXARE QUI
+				diff=abs(delta_ghost_tile-delta_pacman_tile[i])
+				pos=delta_ghost_tile-delta_pacman_tile[i]>=0
+				#print(self.possibilities[i],diff,pos)
+				if (self.possibilities[i]>diff and pos) or (self.possibilities[i]>0 and not pos) or (self.possibilities[i]<0 and abs(self.possibilities[i])<diff):
+					if not pos:
+						diff=-diff
+					self.possibilities[i]= int(diff)
+		#print(self.possibilities)
+		
+
+
 	def can_go_in_there_before_ghost(self):
 		pacman=self.entities[0]
 		red=self.entities[1]
@@ -209,6 +269,8 @@ class Game():
 			#calcola se distanza pacman-incrocio > ghost-incrocio
 			#get incrocio
 		self.possibilities=[1,1,1,1]
+		#self.possibilities=[-1,-1,-1,-1]
+	
 		self.red_in_corner=[0,0,0,0]
 		self.pink_in_corner=[0,0,0,0]
 		#i=0
@@ -1186,6 +1248,7 @@ class Game():
 				#	ghost_action=entity.old_action
 				#else:
 				dy,dx=entity.get_new_path(pacman)
+				
 				#LEGENDA: px=pacman_x,dx=destion_x (next step in path),ex=entity_x (ghost)
 				#dy,dx=entity.get_new_path(px,py) #where am i going to move
 				ex=entity.pos_in_grid_x
@@ -1207,7 +1270,6 @@ class Game():
 	def play_step(self,action):
 		reward=0
 		self.check_game_over()
-	
 		pacman=self.entities[ENTITIES.PACMAN.value]
 		red=self.entities[1]
 		pink=self.entities[2]
@@ -1230,70 +1292,93 @@ class Game():
 		self.stuck=int(self.am_i_regretting(pacman,action))# or not self.can_move(action,pacman)) #or action==Actions.HALT)#: #se stai fermo 
 		turbo_stuck=self.stuck or action == Actions.HALT or not self.can_move(action,pacman)
 
-		if not self.can_move(action,pacman):
-			reward+=-150
+		#if not self.can_move(action,pacman) or self.stuck:
+		#	reward+=-400
 
-		# toppest_ghost_y=min(red.pos_in_grid_y,pink.pos_in_grid_y)
-		# leftest_ghost_x=min(red.pos_in_grid_x,pink.pos_in_grid_x)
+		toppest_ghost_y=min(red.pos_in_grid_y,pink.pos_in_grid_y)
+		leftest_ghost_x=min(red.pos_in_grid_x,pink.pos_in_grid_x)
 
-		# if action==Actions.UP:
-		# 	if toppest_ghost_y<pacman.pos_in_grid_y:
-		# 		reward+=-50
-		# 	if toppest_ghost_y>pacman.pos_in_grid_y:
-		# 		reward+=+50
-		# if action==Actions.DOWN:
-		# 	if toppest_ghost_y>pacman.pos_in_grid_y:
-		# 		reward+=-50
-		# 	if toppest_ghost_y<pacman.pos_in_grid_y:
-		# 		reward+=+50
-		# if action==Actions.LEFT:
-		# 	if leftest_ghost_x<pacman.pos_in_grid_x:
-		# 		reward+=-50
-		# 	if leftest_ghost_x>pacman.pos_in_grid_x:
-		# 		reward+=+50
-		# if action==Actions.RIGHT:
-		# 	if leftest_ghost_x>pacman.pos_in_grid_x:
-		# 		reward+=-50
-		# 	if leftest_ghost_x<pacman.pos_in_grid_x:
-		# 		reward+=+50
-		self.can_go_in_there_before_ghost()
+		if action==Actions.UP:
+			if toppest_ghost_y<pacman.pos_in_grid_y:
+				reward+=-10
+			if toppest_ghost_y>pacman.pos_in_grid_y:
+				reward+=+50
+		if action==Actions.DOWN:
+			if toppest_ghost_y>pacman.pos_in_grid_y:
+				reward+=-10
+			if toppest_ghost_y<pacman.pos_in_grid_y:
+				reward+=+50
+		if action==Actions.LEFT:
+			if leftest_ghost_x<pacman.pos_in_grid_x:
+				reward+=-10
+			if leftest_ghost_x>pacman.pos_in_grid_x:
+				reward+=+50
+		if action==Actions.RIGHT:
+			if leftest_ghost_x>pacman.pos_in_grid_x:
+				reward+=-10
+			if leftest_ghost_x<pacman.pos_in_grid_x:
+				reward+=+50
+		self.can_go_in_there_before_ghost_new()
+		#print(self.possibilities)
 		self.safe_exit=do_i_have_a_third_exit(pacman,action)
-		if self.stuck: #and not self.safe_exit:
-			reward+=-1200
-			#print("stuck")
-		if not (self.possibilities[0]) and action in [Actions.UP,Actions.HALT]:
-			if action==Actions.HALT:
-				if not self.safe_exit:
-					reward+=-200
-			else:
-				reward+=-400
-		#	if self.in_corner[0]:
-		#		reward+=-80
-		if not (self.possibilities[1]) and action in [Actions.DOWN,Actions.HALT]:
-			if action==Actions.HALT:
-				if not self.safe_exit:
-					reward+=-200
-			else:
-				reward+=-400
-		#	if self.in_corner[1]:
-		#		reward+=-80
-		if not (self.possibilities[2]) and action in [Actions.LEFT,Actions.HALT]:
-			if action==Actions.HALT:
-				if not self.safe_exit:
-					reward+=-200
-			else:
-				reward+=-400
-		#	if self.in_corner[2]:
-		#		reward+=-80
-		if not (self.possibilities[3]) and action in [Actions.RIGHT,Actions.HALT]:
-			if action==Actions.HALT:
-				if not self.safe_exit:
-					reward+=-200
-			else:
-				reward+=-400
+		
+		self.sandwitch=self.am_i_in_sandwitch()
+		#if not self.safe_exit and ((self.stuck and not self.sandwitch) or (action==Actions.HALT and not self.sandwitch) or not self.can_move(action,pacman)):#self.stuck: #and not self.safe_exit:
+		#	reward+=-500
+			#print("clown")
+		#else:
+			#print("bravo")
+		#	pass			
+		if not self.can_move(action,pacman):
+			reward+=-2000
+		if self.stuck:
+			reward+=-200
+		inting_lists=[ [Actions.UP,Actions.HALT], [Actions.DOWN,Actions.HALT], [Actions.LEFT,Actions.HALT],[Actions.RIGHT,Actions.HALT]]
+		for i in range(4):
+			if action in inting_lists[i]:
+				if action==Actions.HALT and not self.safe_exit:
+					reward+=-(40 -min(red.distance_from_pacman,pink.distance_from_pacman))*10#-abs(self.possibilities[i])*100 #valore negativo
+
+					# if not self.safe_exit:
+					# 	reward+=-100
+					# else:
+				#if self.possibilities[i]<3: #se il ghost si avvicina troppo
+					#reward+=-50
+						#else:
+						#	if self.sandwitch: #se siamo in safe exit e in un sandwitch (e g_dist >2)
+						#		reward+=100
+						#	else:
+						#		reward+=-10 #sei in una safe exit ma non ce n'e' bisogno 
+				if self.possibilities[i]<1: ##0: #se inta senza possibilità di salvezza (con margine di 3)
+					#if self.possibilities[i]<3 and self.possibilities[i]>-1:
+					#	reward+=-1*80
+					#else:
+					reward+=-(40 -min(red.distance_from_pacman,pink.distance_from_pacman))*10#-abs(self.possibilities[i])*100 #valore negativo
+				#else:
+				#	reward+=-80 #se inta ma può permetterselo (magari poi curva)
+			else: #se faccio un'azione dove non rischio
+				index_pazzo=0 if action== Actions.UP else 1 if action== Actions.DOWN else 2 if action== Actions.LEFT else 3 if action== Actions.RIGHT else -1
+				if action !=Actions.HALT:
+					reward+=5*self.possibilities[index_pazzo]
+		#if self.sandwitch:
+		if self.safe_exit:
+			reward+=200
+		# 	#print("si gode")
+		else:	
+			if self.exit_top==1 and action in [Actions.UP]:
+				reward+=50
+			elif self.exit_top==-1 and action in [Actions.DOWN]:
+				reward+=50
+			elif self.exit_left==1 and action in [Actions.LEFT]:
+				reward+=50
+			elif self.exit_left==-1 and action in [Actions.RIGHT]:
+				reward+=50
+			#else:
+			#	reward+=-500
 		
 		#else:
 		#	if action==Actions.HALT:
+		#		reward+=-300
 		#		if not self.safe_exit:
 		#			reward+=-100
 		#		else:
@@ -1330,8 +1415,6 @@ class Game():
 		
 		#self.stuck=0
 	
-
-		#TODO FARE CLOSEST EXIT CON METODO RICORSIVO
 		#self.stuck=1
 			#print("stai bello am_i_regretting")
 			#reward-=20
@@ -1351,75 +1434,75 @@ class Game():
 		cheese_eaten= self.move_entity(pacman,action)
 		
 		self.cheese_top,self.cheese_left,dist=self.get_closest_cheese()
-		self.cheese_zone_y,self.cheese_zone_x=self.get_zone(self.cheese_left,self.cheese_top)
-		self.pacman_zone_y,self.pacman_zone_x=self.get_zone(pacman.pos_in_grid_y,pacman.pos_in_grid_x)
+		#self.cheese_zone_y,self.cheese_zone_x=self.get_zone(self.cheese_left,self.cheese_top)
+		#self.pacman_zone_y,self.pacman_zone_x=self.get_zone(pacman.pos_in_grid_y,pacman.pos_in_grid_x)
 		
-		self.red_getting_closer=int(red.distance_from_pacman < red.old_distance )
-		self.pink_getting_closer=int(pink.distance_from_pacman < pink.old_distance )
+		#self.red_getting_closer=int(red.distance_from_pacman < red.old_distance )
+		#self.pink_getting_closer=int(pink.distance_from_pacman < pink.old_distance )
 		#self.get_ghost_distance()
 		#self.safe_exit=do_i_have_a_third_exit(pacman)
 		#if self.stuck:
 		#	reward+=-150
 		#double_danger_pass=(self.check_ghost_is_coming2(red) !=-1) and (self.check_ghost_is_coming2(pink) !=-1)
-		int_count=0
-		dodge_count=0
-		self.red_distance_lvl=round(red.distance_from_pacman/3)
-		self.pink_distance_lvl=round(pink.distance_from_pacman/3)
-		dist_lvl= [self.red_distance_lvl,self.pink_distance_lvl]
+		#int_count=0
+		#dodge_count=0
+		#self.red_distance_lvl=round(red.distance_from_pacman/3)
+		#self.pink_distance_lvl=round(pink.distance_from_pacman/3)
+		#dist_lvl= [self.red_distance_lvl,self.pink_distance_lvl]
 	
-		for index,ghost in enumerate([red,pink]):
-			#print(ghost.distance_from_pacman)
-		 	#danger_y,danger_x=self.check_danger(ghost)
-			#danger_y,danger_x,facing=self.check_ghost_is_coming2(ghost)
+		# for index,ghost in enumerate([red,pink]):
+		# 	#print(ghost.distance_from_pacman)
+		#  	#danger_y,danger_x=self.check_danger(ghost)
+		# 	#danger_y,danger_x,facing=self.check_ghost_is_coming2(ghost)
 			
-			warning_facing=self.check_ghost_is_coming2(ghost)
-			if warning_facing != -1: # in danger!
-				reward+=-500
-			else:
-				reward+=100
-			#if warning_facing != -1: # in danger!
-			#	reward+=-50
-			#else:
-			#	reward+=10
-			same_danger_axis=0
-			if pacman.facing.value<2:
-				same_danger_axis=abs(ghost.pos_in_grid_x - pacman.pos_in_grid_x)<=2 #1
-				#double_danger_pass= double_danger_pass and (ghost.pos_in_grid_x != pacman.pos_in_grid_x)
-			else:
-				same_danger_axis=abs(ghost.pos_in_grid_y - pacman.pos_in_grid_y)<=2 #1
-				#double_danger_pass= double_danger_pass and (ghost.pos_in_grid_y != pacman.pos_in_grid_y)
-			inting= [ghost.facing.value,pacman.facing.value] in [[0,1],[1,0],[2,3],[3,2]] #controllare inting
-			inting= inting and same_danger_axis
+		# 	warning_facing=self.check_ghost_is_coming2(ghost)
+		# 	if warning_facing != -1: # in danger!
+		# 		reward+=-500
+		# 	else:
+		# 		reward+=100
+		# 	#if warning_facing != -1: # in danger!
+		# 	#	reward+=-50
+		# 	#else:
+		# 	#	reward+=10
+		# 	same_danger_axis=0
+		# 	if pacman.facing.value<2:
+		# 		same_danger_axis=abs(ghost.pos_in_grid_x - pacman.pos_in_grid_x)<=2 #1
+		# 		#double_danger_pass= double_danger_pass and (ghost.pos_in_grid_x != pacman.pos_in_grid_x)
+		# 	else:
+		# 		same_danger_axis=abs(ghost.pos_in_grid_y - pacman.pos_in_grid_y)<=2 #1
+		# 		#double_danger_pass= double_danger_pass and (ghost.pos_in_grid_y != pacman.pos_in_grid_y)
+		# 	inting= [ghost.facing.value,pacman.facing.value] in [[0,1],[1,0],[2,3],[3,2]] #controllare inting
+		# 	inting= inting and same_danger_axis
 
-			if inting:	
-				#print(dist_lvl)
-				if dist_lvl[index]==0:
-					reward+=-1000
-				elif dist_lvl[index]>=2:
-					reward+=dist_lvl[index]*20
-				else:
-					if not self.safe_exit:
-						reward+=-(2-dist_lvl[index])*300
-		#	ghost_getting_closer=ghost.distance_from_pacman < ghost.old_distance
-			#inting= inting and ghost_getting_closer#same_danger_axis
-		#	inting=ghost_getting_closer and same_danger_axis
+		# 	if inting:	
+		# 		#print(dist_lvl)
+		# 		if dist_lvl[index]==0:
+		# 			reward+=-1000
+		# 		elif dist_lvl[index]>=2:
+		# 			reward+=dist_lvl[index]*20
+		# 		else:
+		# 			if not self.safe_exit:
+		# 				reward+=-(2-dist_lvl[index])*300
+		# #	ghost_getting_closer=ghost.distance_from_pacman < ghost.old_distance
+		# 	#inting= inting and ghost_getting_closer#same_danger_axis
+		# #	inting=ghost_getting_closer and same_danger_axis
 			
-		if warning_facing == -1: #if safe
-			pass
-			#if action==Actions.HALT and self.safe_exit:
-			#	reward+=20
-			#reward+=10 
-		else: #if danger
-			#print("fermo in pericolo")
-			if inting: #or not self.can_move(action,pacman):
-				reward+=-400
-				#pass
+		# if warning_facing == -1: #if safe
+		# 	pass
+		# 	#if action==Actions.HALT and self.safe_exit:
+		# 	#	reward+=20
+		# 	#reward+=10 
+		# else: #if danger
+		# 	#print("fermo in pericolo")
+		# 	if inting: #or not self.can_move(action,pacman):
+		# 		reward+=-400
+		# 		#pass
 
-				#int_count+=1
-					#print("sto intando")
+		# 		#int_count+=1
+		# 			#print("sto intando")
 					
-			else:
-				pass
+		# 	else:
+		# 		pass
 				#dodge_count+=1
 				#reward+=80
 				#print("scappo da danger")
@@ -1502,24 +1585,24 @@ class Game():
 			#reward-=5 #+pow(1.01,self.number_of_cheeese_eaten)
 		#if old_cheese_dist<=self.cheese_dist:
 		#	reward+=3
-		self.sandwitch=self.am_i_in_sandwitch()
+		
 		#exit_top e left dovrebbero escludere le exit che sono bloccate dai fantasmi (guardare self.possibilities)
 		#se il discorso della safe exit è troppo difficile da implementare a questo punto andare con tecnologia anti corner
-		if self.sandwitch:
-			if self.safe_exit:
-				reward+=400
-			# 	#print("si gode")
-			else:	
-				if self.exit_top==1 and action in [Actions.UP]:
-					reward+=70
-				elif self.exit_top==-1 and action in [Actions.DOWN]:
-					reward+=70
-				elif self.exit_left==1 and action in [Actions.LEFT]:
-					reward+=70
-				elif self.exit_left==-1 and action in [Actions.RIGHT]:
-					reward+=70
-				else:
-					reward+=-1000
+		# if self.sandwitch:
+		# 	if self.safe_exit:
+		# 		reward+=400
+		# 	# 	#print("si gode")
+		# 	else:	
+		# 		if self.exit_top==1 and action in [Actions.UP]:
+		# 			reward+=70
+		# 		elif self.exit_top==-1 and action in [Actions.DOWN]:
+		# 			reward+=70
+		# 		elif self.exit_left==1 and action in [Actions.LEFT]:
+		# 			reward+=70
+		# 		elif self.exit_left==-1 and action in [Actions.RIGHT]:
+		# 			reward+=70
+		# 		else:
+		# 			reward+=-1000
 					#print("sono stronzo")
 
 		if cheese_eaten:
@@ -1529,13 +1612,13 @@ class Game():
 			#if self.pacman_zone_y==self.cheese_zone_y and  self.pacman_zone_x==self.cheese_zone_x:
 			#	reward+=80
 			if self.cheese_top and action==Actions.UP: #not in [Actions.DOWN,Actions.HALT]:
-				reward+=40
+				reward+=50
 			if not self.cheese_top and action==Actions.DOWN:#action not in [Actions.UP,Actions.HALT]:
-				reward+=40
+				reward+=50
 			if self.cheese_left and action==Actions.LEFT:#action not in [Actions.RIGHT,Actions.HALT]:
-				reward+=40
+				reward+=50
 			if not self.cheese_left and action==Actions.RIGHT:#action not in [Actions.LEFT,Actions.HALT]:
-				reward+=40
+				reward+=50
 
 		#if turbo_stuck and not self.safe_exit:
 		#	reward+=-20
@@ -1618,6 +1701,31 @@ class Game():
 		#	print(pacman.pos_in_grid_y,pacman.pos_in_grid_x)
 		return reward, self.is_game_over, self.score	
 	
+	def ghost_between_tile_pacman(self,ghost,tile_y,tile_x,i):
+		#if( (tile_y,tile_x) in self.where_entity_is_looking(ghost.pos_in_grid_y,ghost.pos_in_grid_x)):
+		#	return False
+		pacman=self.entities[0]
+		if i==0: #vertical_check_tile_up
+			if pacman.pos_in_grid_x != ghost.pos_in_grid_x:
+				return False
+			if tile_y<=ghost.pos_in_grid_y<=pacman.pos_in_grid_y:
+				return True
+		if i==1: #vertical_check_tile_down
+			if pacman.pos_in_grid_x != ghost.pos_in_grid_x:
+				return False
+			if pacman.pos_in_grid_y<=ghost.pos_in_grid_y<=tile_y:
+				return True
+		if i==2: #tile left
+			if pacman.pos_in_grid_y != ghost.pos_in_grid_y:
+				return False
+			if tile_x<=ghost.pos_in_grid_x<=pacman.pos_in_grid_x:
+				return True
+		if i==3: #tile right
+			if pacman.pos_in_grid_y != ghost.pos_in_grid_y:
+				return False
+			if pacman.pos_in_grid_x<=ghost.pos_in_grid_x<=tile_x:
+				return True
+		return False
 	def am_i_in_sandwitch(self):
 		pacman=self.entities[ENTITIES.PACMAN.value]
 		red=self.entities[ENTITIES.RED.value]
