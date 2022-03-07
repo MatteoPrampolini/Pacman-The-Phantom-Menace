@@ -3,22 +3,26 @@ import os
 import sys
 import numpy as np
 from enum import Enum
-from graphics import CELL_DIM,OFFSET_X,OFFSET_Y #,FPS
+from graphics import CELL_DIM,OFFSET_X,OFFSET_Y,ENTITY_WIDTH, ENTITY_HEIGHT #,FPS
 import pathfinding
+
 class FACING(Enum):
 	NORTH = 0
 	SOUTH= 1
 	WEST = 2
 	EAST= 3
+
 class Actions():
 	UP 	 = [1,0,0,0,0]
 	DOWN = [0,1,0,0,0]
 	LEFT = [0,0,1,0,0]
 	RIGHT= [0,0,0,1,0]
 	HALT = [0,0,0,0,1]
+
 class Entity:
 	def __init__(self,img_path,name="no name"):
 		self.name=name
+		#self.IMAGE = pygame.transform.scale(pygame.image.load(img_path), (ENTITY_WIDTH, ENTITY_HEIGHT))
 		self.IMAGE = pygame.image.load(img_path)
 		self.rect = pygame.Rect(0,0,0,0)
 		#self.set_rect(x,y,*self.IMAGE.get_size())
@@ -26,9 +30,12 @@ class Entity:
 		self.default_y=0
 		self.facing= FACING.EAST
 		self.old_action=Actions.LEFT
+		self.sprite_frame = 0
+		self.next_frame = 0
 		#self.pos_in_grid_x=0
 		#self.pos_in_grid_y=0
 		self.VEL = 1#2*FPS/60
+
 	def reset_position(self):
 		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
 	
@@ -40,14 +47,13 @@ class Entity:
 		self.rect.y=y
 		self.rect.width=w
 		self.rect.height=h
-	
-
 		
 	def window_to_grid(self):
 		x=(self.rect.x-OFFSET_X+self.rect.width//2)//CELL_DIM
 		y=(self.rect.y-OFFSET_Y+self.rect.height//2)//CELL_DIM
 		
 		return x,y
+
 	def __str__(self):
 		x=self.rect.x-OFFSET_X+self.rect.width//2
 		y=self.rect.y-OFFSET_Y+self.rect.height//2
@@ -63,13 +69,15 @@ class Pacman(Entity):
 	
 	def set_invincibility_sprite(self):
 		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-super.png'))
+
 	def set_normal_sprite(self):
-		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-tmp.png'))
+		self.IMAGE=pygame.image.load(os.path.join('Assets', 'Pac_Sprites.png'))
 
 	def reset_invincibility(self):
 			self.invincible=0
 			self.invincibility_timestamp=-9999
 			self.set_normal_sprite()
+
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)
@@ -78,6 +86,7 @@ class Ghost(Entity):
 		self.VEL=1
 		self.last_action=Actions.HALT
 		self.old_path=None
+
 	def get_new_path(self,pacman):
 		pass
 	
