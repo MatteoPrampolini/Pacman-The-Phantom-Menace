@@ -5,36 +5,31 @@ import numpy as np
 from enum import Enum
 from graphics import CELL_DIM,OFFSET_X,OFFSET_Y,ENTITY_WIDTH, ENTITY_HEIGHT #,FPS
 import pathfinding
-
 class FACING(Enum):
 	NORTH = 0
 	SOUTH= 1
 	WEST = 2
 	EAST= 3
-
 class Actions():
 	UP 	 = [1,0,0,0,0]
 	DOWN = [0,1,0,0,0]
 	LEFT = [0,0,1,0,0]
 	RIGHT= [0,0,0,1,0]
 	HALT = [0,0,0,0,1]
-
 class Entity:
 	def __init__(self,img_path,name="no name"):
 		self.name=name
-		#self.IMAGE = pygame.transform.scale(pygame.image.load(img_path), (ENTITY_WIDTH, ENTITY_HEIGHT))
 		self.IMAGE = pygame.image.load(img_path)
 		self.rect = pygame.Rect(0,0,0,0)
 		#self.set_rect(x,y,*self.IMAGE.get_size())
 		self.default_x=0
 		self.default_y=0
-		self.facing= FACING.EAST
-		self.old_action=Actions.LEFT
-		self.sprite_frame = 0
-		self.next_frame = 0
+		self.facing= FACING.WEST
+		self.old_action=Actions.UP
 		#self.pos_in_grid_x=0
 		#self.pos_in_grid_y=0
 		self.VEL = 1#2*FPS/60
+
 
 	def reset_position(self):
 		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
@@ -47,6 +42,8 @@ class Entity:
 		self.rect.y=y
 		self.rect.width=w
 		self.rect.height=h
+	
+
 		
 	def window_to_grid(self):
 		x=(self.rect.x-OFFSET_X+self.rect.width//2)//CELL_DIM
@@ -85,11 +82,20 @@ class Ghost(Entity):
 		#self.VEL = int(1*FPS/60)
 		self.VEL=1
 		self.last_action=Actions.HALT
+		self.distance_from_pacman=12
+		self.old_pos=[self.default_y,self.default_x]
+		self.path=[]
+
 		self.old_path=None
 
 	def get_new_path(self,pacman):
 		pass
-	
+
+	def reset_position(self):
+		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
+		self.old_distance=12
+		self.old_pos=[self.default_y,self.default_x]
+
 class RedGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
 		super().__init__(img_path,grid,name)
@@ -100,11 +106,12 @@ class RedGhost(Ghost):
 		pacman_facing=pacman.facing
 		x=self.pos_in_grid_x
 		y=self.pos_in_grid_y
-		p = self.solver.get_path(py,px,y,x)
-		if not p:
-			return (-1,-1)
-		if p:
-			return p
+		self.old_distance=self.distance_from_pacman
+		self.old_pos=[y,x]
+		self.path,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
+		#if len(self.path)<=1:
+		return self.path[0]
+		#return self.path
 
 class PinkGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
@@ -153,8 +160,6 @@ class PinkGhost(Ghost):
 				i-=1
 		x=self.pos_in_grid_x
 		y=self.pos_in_grid_y
-		p = self.solver.get_path(py,px,y,x)
-		if not p:
-			return (-2,-2)
-		if p:
-			return p
+		self.old_pos=[y,x]
+		self.path,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
+		return self.path[0]

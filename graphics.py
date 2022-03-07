@@ -103,7 +103,7 @@ class PacGraphic:
 
 			pass
 
-	def draw_window(self,debug):
+	def draw_window(self,debug,reward):
 		self.WIN.fill((0, 0, 0))
 		self.WIN.blit(self.MAP, (0, 0))
 		
@@ -115,7 +115,7 @@ class PacGraphic:
 		self.draw_coins()
 		self.draw_entities()
 		
-		self.draw_text()
+		#self.draw_text(reward)
 		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
 		pygame.display.update()
@@ -133,8 +133,8 @@ class PacGraphic:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//2)
 	
 	
-	def draw_text(self):
+	def draw_text(self,reward):
 		if self.timer < 2.5:
-			ready_lbl = self.font.render("READY!", True, YELLOW)
+			ready_lbl = self.font.render(reward, True, YELLOW)
 			x,y=self.grid_to_window(row=19,col=10)
 			self.WIN.blit(ready_lbl,[x-6,y+6])
