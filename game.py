@@ -1255,9 +1255,6 @@ class Game():
 				ey=entity.pos_in_grid_y
 				#print("sono a: "+str(ey)+","+str(ex)+" e voglio andare a: "+str(dy)+","+str(dx))
 				#print(dx)
-				if dx==-2: #dovrebbe sempre trovare il path, questo if e' in caso l'universo si distrugga
-					print("error")
-					continue
 				if dx==-1:
 					dx=pacman.pos_in_grid_x
 					dy=pacman.pos_in_grid_y

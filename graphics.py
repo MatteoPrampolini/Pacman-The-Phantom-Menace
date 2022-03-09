@@ -8,7 +8,7 @@ OFFSET_Y=48
 GRID_ROWS=31 
 GRID_COLS=28
 CELL_DIM=16
-ENTITY_WIDTH, ENTITY_HEIGHT = 32, 32
+ENTITY_WIDTH, ENTITY_HEIGHT = 25, 25
 #colors
 WHITE = (255, 255, 255)
 RED = (200,0,0)
@@ -22,22 +22,20 @@ YELLOW = (255,241,0)
 class PacGraphic:
 		
 	def __init__(self,WIDTH,HEIGHT):
-		self.w = WIDTH
-		self.h = HEIGHT
+		self.w=WIDTH
+		self.h=HEIGHT
 		self.WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 		self.MAP = pygame.image.load(os.path.join('Assets', 'map.png'))
-		self.entities = None
+		self.entities=None
 		self.grid = None
 		self.font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),25)
-		self.timer = 0
+		self.timer=0
 		self.clock = pygame.time.Clock()
-		self.FPS = 40
-		self.frame_iteration = 0
-
+		self.FPS=0
 		
 	def reset(self):
 		self.timer= 0
-		self.frame_iteration = 0
+		self.frame_iteration=0
 		self.old_iter=0
 		for entity in self.entities:
 			#entity.pos_in_grid_y=entity.default_y
@@ -78,7 +76,6 @@ class PacGraphic:
 		x=(x)//CELL_DIM
 		y=(y)//CELL_DIM
 		return x,y
-
 	def grid_to_window(self,row,col): 
 		
 		x=col*CELL_DIM
@@ -87,21 +84,7 @@ class PacGraphic:
 	
 	def draw_entities(self):
 		for entity in self.entities:
-			if entity.name == "pacman" :
-				#immagine,posizione, punto iniziale frame da prendere = (numero,0), quanto è grande la singola sprite = (33,33)
-				self.WIN.blit(entity.IMAGE, (entity.rect.x - 8, entity.rect.y - 8), (((entity.sprite_frame * 33) + (entity.facing.value * (33*4))), 0, 33, 33))
-				if self.frame_iteration >= entity.next_frame:
-					entity.sprite_frame = ((entity.sprite_frame + 1) % 4)
-					print(entity.sprite_frame , entity.facing.value)
-					entity.next_frame += 8
-			else:
-				self.WIN.blit(entity.IMAGE, (entity.rect.x - 8, entity.rect.y - 8), (((entity.sprite_frame * 32) + (entity.facing.value * (32*2))), 0, 32, 32))
-				if self.frame_iteration >= entity.next_frame:
-					entity.sprite_frame = ((entity.sprite_frame + 1) % 2)
-					entity.next_frame += 40
-				#if scared usa altre sprite
-
-			pass
+			self.WIN.blit(entity.IMAGE, (entity.rect.x+8,entity.rect.y+8))
 
 	def draw_window(self,debug,reward):
 		self.WIN.fill((0, 0, 0))

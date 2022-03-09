@@ -76,10 +76,12 @@ class solver():
 				i, j = i, j+1
 				the_path.append((i, j))
 				k -= 1
-				
+		
+		#print(the_path)
 		if len(the_path)== 1:
-			return (-1,-1),1
-		return the_path[1],len(the_path)
+			return [(-1,-1)],0
+
+		return the_path[1:],len(the_path)
 	
 	def get_path_lenght(self,y1,x1,y2,x2):
 		self.m = []

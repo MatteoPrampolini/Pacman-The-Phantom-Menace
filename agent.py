@@ -10,7 +10,7 @@ from helper import plot
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.005
-TARGET_GAMES= -70
+TARGET_GAMES= 70
 def calculate_inting(pacman,ghost):
 	if pacman.facing.value<2:
 		same_danger_axis=abs(ghost.pos_in_grid_x - pacman.pos_in_grid_x)<=1
