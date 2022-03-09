@@ -130,7 +130,7 @@ class Game():
 
 
 	def init_entities(self):
-		pacman=Pacman(os.path.join('Assets', 'pac-tmp.png'),name="pacman")
+		pacman=Pacman(os.path.join('Assets', 'Pac_Sprites.png'),name="pacman")
 		x,y=self.graphics.grid_to_window(row=23,col=12)
 		#x,y=self.graphics.grid_to_window(row=14,col=18)
 
@@ -147,7 +147,7 @@ class Game():
 		self.entities.append(pacman)
 		#input()
 		#RED
-		red=RedGhost(os.path.join('Assets', 'red-tmp.png'),self.grid,name="blinky")
+		red=RedGhost(os.path.join('Assets', 'Red_Sprites.png'),self.grid,name="blinky")
 		x,y=self.graphics.grid_to_window(row=11,col=12)
 		#offsettino_x=15#//2 #29/2
 		#offsettino_y=16#//2 #33/2
@@ -157,7 +157,7 @@ class Game():
 		red.set_pos_in_grid()
 		self.entities.append(red)
 		#PINK
-		pink=PinkGhost(os.path.join('Assets', 'pink-tmp.png'),self.grid,name="pinky")
+		pink=PinkGhost(os.path.join('Assets', 'Pink_Sprites.png'),self.grid,name="pinky")
 		x,y=self.graphics.grid_to_window(row=11,col=15)
 		pink.default_x=x
 		pink.default_y=y+48

@@ -26,6 +26,8 @@ class Entity:
 		self.default_y=0
 		self.facing= FACING.WEST
 		self.old_action=Actions.UP
+		self.sprite_frame = 0
+		self.next_frame = 0
 		#self.pos_in_grid_x=0
 		#self.pos_in_grid_y=0
 		self.VEL = 1#2*FPS/60
@@ -66,13 +68,16 @@ class Pacman(Entity):
 	
 	def set_invincibility_sprite(self):
 		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-super.png'))
+
 	def set_normal_sprite(self):
-		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-tmp.png'))
+		self.IMAGE=pygame.image.load(os.path.join('Assets', 'Pac_Sprites.png'))
 
 	def reset_invincibility(self):
 			self.invincible=0
 			self.invincibility_timestamp=-9999
 			self.set_normal_sprite()
+
+
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)

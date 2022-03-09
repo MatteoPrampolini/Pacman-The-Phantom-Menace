@@ -32,6 +32,7 @@ class PacGraphic:
 		self.timer=0
 		self.clock = pygame.time.Clock()
 		self.FPS=0
+		self.frame_iteration = 0
 		
 	def reset(self):
 		self.timer= 0
@@ -84,7 +85,24 @@ class PacGraphic:
 	
 	def draw_entities(self):
 		for entity in self.entities:
-			self.WIN.blit(entity.IMAGE, (entity.rect.x+8,entity.rect.y+8))
+			if entity.name == "pacman":
+				# immagine,posizione, punto iniziale frame da prendere = (numero,0), quanto è grande la singola sprite = (33,33)
+				self.WIN.blit(entity.IMAGE, (entity.rect.x - 8, entity.rect.y - 8),
+							  (((entity.sprite_frame * 33) + (entity.facing.value * (33 * 4))), 0, 33, 33))
+				if self.frame_iteration >= entity.next_frame:
+					entity.sprite_frame = ((entity.sprite_frame + 1) % 4)
+					print(entity.sprite_frame, entity.facing.value)
+					#ogni quanti tick passa al frame successivo
+					entity.next_frame += 20
+			else:
+				self.WIN.blit(entity.IMAGE, (entity.rect.x - 8, entity.rect.y - 8),
+							  (((entity.sprite_frame * 32) + (entity.facing.value * (32 * 2))), 0, 32, 32))
+				if self.frame_iteration >= entity.next_frame:
+					entity.sprite_frame = ((entity.sprite_frame + 1) % 2)
+					entity.next_frame += 80
+			# if scared usa altre sprite
+
+			pass
 
 	def draw_window(self,debug,reward):
 		self.WIN.fill((0, 0, 0))
