@@ -43,6 +43,8 @@ class PacGraphic:
 			#entity.pos_in_grid_x=entity.default_x
 			entity.reset_position()
 			entity.set_pos_in_grid()
+			entity.sprite_frame = 0
+			entity.next_frame = 0
 			if entity.name=="pacman":
 				entity.reset_invincibility()
 
