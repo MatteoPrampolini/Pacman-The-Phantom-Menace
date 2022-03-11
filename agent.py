@@ -9,8 +9,8 @@ from model import Linear_QNet, QTrainer
 from helper import plot
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
-LR = 0.005
-TARGET_GAMES= 70
+LR = 0.001
+TARGET_GAMES= -70
 def calculate_inting(pacman,ghost):
 	if pacman.facing.value<2:
 		same_danger_axis=abs(ghost.pos_in_grid_x - pacman.pos_in_grid_x)<=1
@@ -30,7 +30,7 @@ class Agent:
 		self.epsilon = 0.0 # randomness
 		self.gamma = 0.9 # discount rate	
 		self.memory = deque(maxlen=MAX_MEMORY) # popleft()
-		self.model = Linear_QNet(22,400, 5)
+		self.model = Linear_QNet(24,256, 5)
 		#meglio avere più parametri boolean che uno int, a quanto pare. [?] ricontrollare con nuova funzione check_ghost_is_coming
 		self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 		self.n_games=0
@@ -155,7 +155,7 @@ class Agent:
 		#state= [pink_danger,red_danger,game.red_distance_lvl,game.pink_distance_lvl,game.exit_top,game.exit_left,game.sandwitch,game.safe_exit,game.cheese_left,game.cheese_top,red_left,red_top,pink_left,pink_top,*neightbours,*game.possibilities,game.last_meaninful_action,red.facing.value,pink.facing.value] #pink_danger_y,red_danger_y
 		#state= [game.exit_top,game.exit_left,game.sandwitch,game.safe_exit,game.cheese_left,game.cheese_top,red_left,red_top,pink_left,pink_top,*neightbours,*game.possibilities,game.last_meaninful_action,red.facing.value,pink.facing.value] #pink_danger_y,red_danger_y
 		#state= [red.distance_from_pacman,pink.distance_from_pacman,game.cheese_left,game.cheese_top,game.exit_top,game.exit_left,game.sandwitch,game.safe_exit,red_left,red_top,pink_left,pink_top,*neightbours,*game.possibilities,game.last_meaninful_action,red.facing.value,pink.facing.value] #pink_danger_y,red_danger_y
-		state= [red.distance_from_pacman,pink.distance_from_pacman,game.cheese_left,game.cheese_top,game.exit_top,game.exit_left,game.safe_exit,red_left,red_top,pink_left,pink_top,*neightbours,*game.possibilities,game.last_meaninful_action,red.facing.value,pink.facing.value] #pink_danger_y,red_danger_y
+		state= [int(red.distance_from_pacman<3),int(pink.distance_from_pacman<3),int(red.distance_from_pacman<7),int(pink.distance_from_pacman<7),game.cheese_left,game.cheese_top,game.exit_top,game.exit_left,game.safe_exit,red_left,red_top,pink_left,pink_top,*neightbours,*game.possibilities,game.last_meaninful_action,red.facing.value,pink.facing.value] #pink_danger_y,red_danger_y
 
 		#state= [red_warning,pink_warning,pacman.facing.value,red.facing.value,pink.facing.value,game.stuck,game.safe_exit,*neightbours,red_danger_y,red_top,pink_top,red_left,pink_left,cheese_left,cheese_top]
 

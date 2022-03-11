@@ -213,7 +213,6 @@ class Game():
 			#self.possibilities
 			for i in range(4):
 				#if i==ghost.facing.value and (ghost_looking_at[ghost.facing.value][0],ghost_looking_at[ghost.facing.value][1]) in ghost.path: #and ((ghost_looking_at[i][0],ghost_looking_at[i][1]) != (ghost.pos_in_grid_x,ghost.pos_in_grid_y)):
-				
 				if (four_direction[i][0],four_direction[i][1]) in ghost.path or (four_direction[i][0],four_direction[i][1])==(py,px): #and ((ghost_looking_at[i][0],ghost_looking_at[i][1]) != (ghost.pos_in_grid_x,ghost.pos_in_grid_y)):
 					#print("nel percorso",str(i))
 					#if (ghost_looking_at[i][0],ghostm_looking_at[i][1]) == (four_direction[i][0],four_direction[i][1]): #in four_direction:
@@ -242,6 +241,8 @@ class Game():
 
 				#FIXARE QUI
 				diff=abs(delta_ghost_tile-delta_pacman_tile[i])
+				if (four_direction[i][0],four_direction[i][1])==(py,px):
+					diff=0
 				pos=delta_ghost_tile-delta_pacman_tile[i]>=0
 				#print(self.possibilities[i],diff,pos)
 				if (self.possibilities[i]>diff and pos) or (self.possibilities[i]>0 and not pos) or (self.possibilities[i]<0 and abs(self.possibilities[i])<diff):
@@ -1271,7 +1272,7 @@ class Game():
 		red=self.entities[1]
 		pink=self.entities[2]
 		if self.is_game_over:
-				reward=-4000
+				reward=-10000
 				self.n_games+=1
 				return reward, self.is_game_over, self.score
 		if self.graphics.timer <2.5:
@@ -1299,22 +1300,22 @@ class Game():
 			if toppest_ghost_y<pacman.pos_in_grid_y:
 				reward+=-10
 			if toppest_ghost_y>pacman.pos_in_grid_y:
-				reward+=+50
+				reward+=+10
 		if action==Actions.DOWN:
 			if toppest_ghost_y>pacman.pos_in_grid_y:
 				reward+=-10
 			if toppest_ghost_y<pacman.pos_in_grid_y:
-				reward+=+50
+				reward+=+10
 		if action==Actions.LEFT:
 			if leftest_ghost_x<pacman.pos_in_grid_x:
 				reward+=-10
 			if leftest_ghost_x>pacman.pos_in_grid_x:
-				reward+=+50
+				reward+=+10
 		if action==Actions.RIGHT:
 			if leftest_ghost_x>pacman.pos_in_grid_x:
 				reward+=-10
 			if leftest_ghost_x<pacman.pos_in_grid_x:
-				reward+=+50
+				reward+=+10
 		self.can_go_in_there_before_ghost_new()
 		#print(self.possibilities)
 		self.safe_exit=do_i_have_a_third_exit(pacman,action)
@@ -1329,12 +1330,34 @@ class Game():
 		if not self.can_move(action,pacman):
 			reward+=-2000
 		if self.stuck:
-			reward+=-200
+			reward+=-700
 		inting_lists=[ [Actions.UP,Actions.HALT], [Actions.DOWN,Actions.HALT], [Actions.LEFT,Actions.HALT],[Actions.RIGHT,Actions.HALT]]
+		#print(self.possibilities)
 		for i in range(4):
 			if action in inting_lists[i]:
-				if action==Actions.HALT and not self.safe_exit:
-					reward+=-(40 -min(red.distance_from_pacman,pink.distance_from_pacman))*10#-abs(self.possibilities[i])*100 #valore negativo
+				if action==Actions.HALT and self.safe_exit:
+					break
+				if self.possibilities[i]<0 and pacman.facing.value == i: ##0: #se inta senza possibilità di salvezza (con margine di 3)
+						#if self.possibilities[i]<3 and self.possibilities[i]>-1:
+						#	reward+=-1*80
+						#else:
+					reward+=-1000
+									#reward+=-(40 -min(red.distance_from_pacman,pink.distance_from_pacman))*10#-abs(self.possibilities[i])*100 #valore negativo
+				#else:
+				#	reward+=-80 #se inta ma può permetterselo (magari poi curva)
+			#else: #se faccio un'azione dove non rischio
+				#print("no")
+
+				#index_pazzo=0 if action== Actions.UP else 1 if action== Actions.DOWN else 2 if action== Actions.LEFT else 3 if action== Actions.RIGHT else -1
+				#if action !=Actions.HALT:
+				#	reward+=2*self.possibilities[index_pazzo]
+		#if action==Actions.HALT: 
+		if min(red.distance_from_pacman,pink.distance_from_pacman)<3:	
+			reward+=-1000#-(min(red.distance_from_pacman,pink.distance_from_pacman))*500
+		if min(red.distance_from_pacman,pink.distance_from_pacman)<7:
+			reward+=-1000
+				# 	#print("si gode")
+				
 
 					# if not self.safe_exit:
 					# 	reward+=-100
@@ -1346,30 +1369,9 @@ class Game():
 						#		reward+=100
 						#	else:
 						#		reward+=-10 #sei in una safe exit ma non ce n'e' bisogno 
-				if self.possibilities[i]<1: ##0: #se inta senza possibilità di salvezza (con margine di 3)
-					#if self.possibilities[i]<3 and self.possibilities[i]>-1:
-					#	reward+=-1*80
-					#else:
-					reward+=-(40 -min(red.distance_from_pacman,pink.distance_from_pacman))*10#-abs(self.possibilities[i])*100 #valore negativo
-				#else:
-				#	reward+=-80 #se inta ma può permetterselo (magari poi curva)
-			else: #se faccio un'azione dove non rischio
-				index_pazzo=0 if action== Actions.UP else 1 if action== Actions.DOWN else 2 if action== Actions.LEFT else 3 if action== Actions.RIGHT else -1
-				if action !=Actions.HALT:
-					reward+=5*self.possibilities[index_pazzo]
+
 		#if self.sandwitch:
-		if self.safe_exit:
-			reward+=200
-		# 	#print("si gode")
-		else:	
-			if self.exit_top==1 and action in [Actions.UP]:
-				reward+=50
-			elif self.exit_top==-1 and action in [Actions.DOWN]:
-				reward+=50
-			elif self.exit_left==1 and action in [Actions.LEFT]:
-				reward+=50
-			elif self.exit_left==-1 and action in [Actions.RIGHT]:
-				reward+=50
+
 			#else:
 			#	reward+=-500
 		
@@ -1382,7 +1384,15 @@ class Game():
 		#			reward+=100
 		#	if self.in_corner[3]:
 		#		reward+=-80
-
+		if not self.safe_exit:
+			if self.exit_top==1 and action in [Actions.UP]:
+				reward+=20
+			elif self.exit_top==-1 and action in [Actions.DOWN]:
+				reward+=20
+			elif self.exit_left==1 and action in [Actions.LEFT]:
+				reward+=20
+			elif self.exit_left==-1 and action in [Actions.RIGHT]:
+				reward+=20
 		#if action in [Actions.UP]:#,Actions.HALT]:# or not self.can_move(action,pacman): 
 		#	if not (self.possibilities[0]):#and self.possibilities[4]):
 		#		reward+=-20
@@ -1604,18 +1614,10 @@ class Game():
 
 		if cheese_eaten:
 			self.score+=10
-			reward+=500 #+ pow(1.03,self.number_of_cheeese_eaten)
-		else:
+			reward+=1800 #+ pow(1.03,self.number_of_cheeese_eaten)
 			#if self.pacman_zone_y==self.cheese_zone_y and  self.pacman_zone_x==self.cheese_zone_x:
 			#	reward+=80
-			if self.cheese_top and action==Actions.UP: #not in [Actions.DOWN,Actions.HALT]:
-				reward+=50
-			if not self.cheese_top and action==Actions.DOWN:#action not in [Actions.UP,Actions.HALT]:
-				reward+=50
-			if self.cheese_left and action==Actions.LEFT:#action not in [Actions.RIGHT,Actions.HALT]:
-				reward+=50
-			if not self.cheese_left and action==Actions.RIGHT:#action not in [Actions.LEFT,Actions.HALT]:
-				reward+=50
+
 
 		#if turbo_stuck and not self.safe_exit:
 		#	reward+=-20
@@ -1682,7 +1684,7 @@ class Game():
 
 		self.check_game_over()
 		if self.is_game_over:
-				reward=-4000
+				reward=-10000
 				self.n_games+=1
 		if self.check_game_won():
 			#reward=100
@@ -1756,10 +1758,10 @@ class Game():
 		red=self.entities[ENTITIES.RED.value]
 		pink=self.entities[ENTITIES.PINK.value]
 		self.is_game_over= (pacman.pos_in_grid_y == red.pos_in_grid_y and pacman.pos_in_grid_x == red.pos_in_grid_x) or (pacman.pos_in_grid_y == pink.pos_in_grid_y and pacman.pos_in_grid_x == pink.pos_in_grid_x)
-		poss=0
-		for i in range(4):
-			poss+=self.possibilities[i]
-		self.is_game_over= self.is_game_over or (self.am_i_in_sandwitch() and poss==0)
+		#poss=0
+		#for i in range(4):
+		#	poss+=self.possibilities[i]
+		#self.is_game_over= self.is_game_over or (self.am_i_in_sandwitch() and poss==0)
 		#if self.is_game_over:
 			#print(self.game_over)
 		#if entity.pos_in_grid_x== pacman.pos_in_grid_x and entity.pos_in_grid_y == pacman.pos_in_grid_y:
