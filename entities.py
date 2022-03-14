@@ -21,17 +21,13 @@ class Entity:
 		self.name=name
 		self.IMAGE = pygame.image.load(img_path)
 		self.rect = pygame.Rect(0,0,0,0)
-		#self.set_rect(x,y,*self.IMAGE.get_size())
 		self.default_x=0
 		self.default_y=0
 		self.facing= FACING.WEST
 		self.old_action=Actions.UP
 		self.sprite_frame = 0
 		self.next_frame = 0
-		#self.pos_in_grid_x=0
-		#self.pos_in_grid_y=0
-		self.VEL = 1#2*FPS/60
-	
+
 
 	def reset_position(self):
 		self.set_rect(self.default_x,self.default_y,self.rect.w,self.rect.h)
@@ -61,29 +57,12 @@ class Entity:
 class Pacman(Entity):
 	def __init__(self,img_path,name="no name"):
 		super().__init__(img_path,name)
-		
-		#self.VEL = int(2*FPS/60)
-		self.reset_invincibility()
-		#self.VEL=2
-	
-	def set_invincibility_sprite(self):
-		self.IMAGE=pygame.image.load(os.path.join('Assets', 'pac-super.png'))
-
-	def set_normal_sprite(self):
-		self.IMAGE=pygame.image.load(os.path.join('Assets', 'Pac_Sprites.png'))
-
-	def reset_invincibility(self):
-			self.invincible=0
-			self.invincibility_timestamp=-9999
-			self.set_normal_sprite()
-
+		self.IMAGE=pygame.image.load(os.path.join('Assets', 'Pac_Sprites.png'))	
 
 class Ghost(Entity):
 	def __init__(self,img_path,grid :np.ndarray,name="no name"):
 		super().__init__(img_path,name)
 		self.solver= pathfinding.solver(grid)
-		#self.VEL = int(1*FPS/60)
-		self.VEL=1
 		self.last_action=Actions.HALT
 		self.distance_from_pacman=12
 		self.old_pos=[self.default_y,self.default_x]
@@ -112,9 +91,7 @@ class RedGhost(Ghost):
 		self.old_distance=self.distance_from_pacman
 		self.old_pos=[y,x]
 		self.path,self.distance_from_pacman = self.solver.get_path(py,px,y,x)
-		#if len(self.path)<=1:
 		return self.path[0]
-		#return self.path
 
 class PinkGhost(Ghost):
 	def __init__(self,img_path,grid,name="no name"):
@@ -152,7 +129,6 @@ class PinkGhost(Ghost):
 				if grid[py][px]<2:
 					break
 				i-=1
-		#print(i)
 		if pacman_facing== FACING.EAST:
 			while i>0:
 				px=tmpx+i

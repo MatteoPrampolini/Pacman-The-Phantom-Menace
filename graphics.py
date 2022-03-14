@@ -39,14 +39,10 @@ class PacGraphic:
 		self.frame_iteration=0
 		self.old_iter=0
 		for entity in self.entities:
-			#entity.pos_in_grid_y=entity.default_y
-			#entity.pos_in_grid_x=entity.default_x
 			entity.reset_position()
 			entity.set_pos_in_grid()
 			entity.sprite_frame = 0
 			entity.next_frame = 0
-			if entity.name=="pacman":
-				entity.reset_invincibility()
 
 	def get_grid(self,grid):
 		self.grid=grid
@@ -64,7 +60,8 @@ class PacGraphic:
 		pygame.draw.rect(self.WIN,RED,tmp)
 		pygame.display.update()
 
-	def draw_grid(self): #per il debug, non viene chiamata nella versione finale
+	def draw_grid(self):
+		"""debug only"""
 		tmp = pygame.Rect(0,0, CELL_DIM, CELL_DIM)
 		COLORS=[WHITE,GOLD,BLUE,BLACK]
 		for row in range(GRID_ROWS):
@@ -74,8 +71,6 @@ class PacGraphic:
 				pygame.draw.rect(self.WIN,COLORS[self.grid[row][column]],tmp)
 	
 	def window_to_grid(self,x,y):
-		#x=(x-OFFSET_X+width//2)//CELL_DIM
-		#y=(y-OFFSET_Y+height//2)//CELL_DIM
 		x=(x)//CELL_DIM
 		y=(y)//CELL_DIM
 		return x,y
@@ -93,7 +88,7 @@ class PacGraphic:
 							  (((entity.sprite_frame * 33) + (entity.facing.value * (33 * 4))), 0, 33, 33))
 				if self.frame_iteration >= entity.next_frame:
 					entity.sprite_frame = ((entity.sprite_frame + 1) % 4)
-					print(entity.sprite_frame, entity.facing.value)
+					#print(entity.sprite_frame, entity.facing.value)
 					#ogni quanti tick passa al frame successivo
 					entity.next_frame += 20
 			else:
@@ -102,9 +97,6 @@ class PacGraphic:
 				if self.frame_iteration >= entity.next_frame:
 					entity.sprite_frame = ((entity.sprite_frame + 1) % 2)
 					entity.next_frame += 80
-			# if scared usa altre sprite
-
-			pass
 
 	def draw_window(self,debug,reward):
 		self.WIN.fill((0, 0, 0))
@@ -118,7 +110,6 @@ class PacGraphic:
 		self.draw_coins()
 		self.draw_entities()
 		
-		#self.draw_text(reward)
 		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
 		pygame.display.update()
@@ -136,7 +127,7 @@ class PacGraphic:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//2)
 	
 	
-	def draw_text(self,reward):
+	def draw_text(self,reward): #currently not used
 		if self.timer < 2.5:
 			ready_lbl = self.font.render(reward, True, YELLOW)
 			x,y=self.grid_to_window(row=19,col=10)
