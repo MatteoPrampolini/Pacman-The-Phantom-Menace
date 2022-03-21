@@ -90,13 +90,13 @@ class PacGraphic:
 					entity.sprite_frame = ((entity.sprite_frame + 1) % 4)
 					#print(entity.sprite_frame, entity.facing.value)
 					#ogni quanti tick passa al frame successivo
-					entity.next_frame += 20
+					entity.next_frame += 10
 			else:
 				self.WIN.blit(entity.IMAGE, (entity.rect.x - 8, entity.rect.y - 8),
 							  (((entity.sprite_frame * 32) + (entity.facing.value * (32 * 2))), 0, 32, 32))
 				if self.frame_iteration >= entity.next_frame:
 					entity.sprite_frame = ((entity.sprite_frame + 1) % 2)
-					entity.next_frame += 80
+					entity.next_frame += 40
 
 	def draw_window(self,debug,reward):
 		self.WIN.fill((0, 0, 0))
