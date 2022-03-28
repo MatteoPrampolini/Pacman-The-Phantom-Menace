@@ -79,6 +79,7 @@ class Game():
 		self.s= solver(self.grid)
 		mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
 		mixer.music.set_volume(0.2)
+		self.quit = False
 		self.reset()
 		
 	def reset(self):
@@ -385,6 +386,7 @@ class Game():
 			dist=float_sqrt(pow(abs(py-coords[1]),2)+pow(abs(px-coords[0]),2))
 			if dist < self.BEST[2]:
 				self.BEST=[coords[1],coords[0],dist]
+
 	def _recursive_cheese(self,y,x,dist,prev_direction):
 
 		if dist>35: #if cheese is too far, switch to fastest (and worse) algorithm
@@ -619,6 +621,7 @@ class Game():
 			
 		
 		return cheese_eaten
+
 	def can_move(self,action,entity):
 
 		x,y=entity.window_to_grid()
@@ -643,6 +646,7 @@ class Game():
 		if self.grid[next_y,next_x]==2:
 			return False
 		return True
+
 	def coords_to_direction(self,x,y,dx,dy):
 		if x>dx:
 			return Actions.LEFT
@@ -779,6 +783,7 @@ class Game():
 			if pacman.pos_in_grid_x<=ghost.pos_in_grid_x<=tile_x:
 				return True
 		return False
+
 	def am_i_in_sandwitch(self):
 		pacman=self.entities[ENTITIES.PACMAN.value]
 		red=self.entities[ENTITIES.RED.value]
@@ -810,7 +815,7 @@ class Game():
 def main():
 
 	game= Game()
-	while True:
+	while game.quit == False:
 		check_for_events(game)
 		if not game.is_running:
 			continue
@@ -833,6 +838,11 @@ def check_for_events(game):
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
+
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					game.quit = True
+
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_p: #if P is pressed, toggle pause
 					game.is_running=not game.is_running

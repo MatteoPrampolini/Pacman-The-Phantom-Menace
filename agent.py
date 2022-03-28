@@ -18,6 +18,7 @@ class Agent:
 		self.model = Linear_QNet(24,256, 5)
 		self.trainer = QTrainer(self.model, lr=lr, gamma=self.gamma)
 		self.target_games=target_games
+
 	def get_state(self, game):
 		
 		pacman=game.entities[ENTITIES.PACMAN.value]
@@ -78,6 +79,7 @@ def save_state_dict(agent):
 	if os.path.exists(file_name):
 		os.remove(file_name)
 	torch.save(agent.model.state_dict(), file_name)
+
 def load_state_dict(agent,game):
 	game.should_run=False
 	PATH= os.path.dirname(__file__)
@@ -100,6 +102,7 @@ def write_record(record):
 		f.write(str(record))
 
 def read_record():
+	PATH = os.path.dirname(__file__)
 	model_folder_path = 'model'
 	file_name = os.path.join(PATH,model_folder_path,'record.txt')
 	if os.path.exists(file_name):
@@ -117,7 +120,7 @@ def train(lr,target_games):
 	game = Game()
 	load_state_dict(agent,game)
 	record=read_record()
-	while True:
+	while game.quit == False:
 		check_for_events(game)
 		while not game.is_running:
 			check_for_events(game)
@@ -147,8 +150,10 @@ def train(lr,target_games):
 			print('Game', agent.n_games, 'This Score', score, 'Best Score:', record)
 
 def play():
+
 	print("Playing at my best!")
 	train(lr = 0.001,target_games= -1)
+
 if __name__ == '__main__':
 	PATH= os.path.dirname(__file__)
 	os.chdir(PATH)
