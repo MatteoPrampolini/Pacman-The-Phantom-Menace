@@ -16,23 +16,30 @@ from math import sqrt as float_sqrt
 from pygame import mixer
 
 GHOST_SPEED=6
+
 class FACING(Enum):
 	NORTH = 0
 	SOUTH= 1
 	WEST = 2
 	EAST= 3
+
+
 class Actions(Enum):
 	UP 	 = [1,0,0,0,0]
 	DOWN = [0,1,0,0,0]
 	LEFT = [0,0,1,0,0]
 	RIGHT= [0,0,0,1,0]
 	HALT = [0,0,0,0,1]
+
+
 class ENTITIES(Enum):
 	PACMAN = 0
 	RED = 1
 	PINK = 2
 	CYAN = 3
 	GOLD = 4
+
+
 pygame.font.init()	# text init
 pygame.mixer.init()	 # sound init
 
@@ -129,7 +136,7 @@ class Game():
 
 	def init_entities(self):
 		pacman=Pacman(os.path.join('Assets', 'Pac_Sprites.png'),name="pacman")
-		x,y=self.graphics.grid_to_window(row=23,col=12)
+		x,y=self.graphics.grid_to_window(row=23,col=13)
 		rect_dim=16
 		pacman.default_x=x
 		pacman.default_y=y+48
@@ -566,7 +573,7 @@ class Game():
 		return y,x, entity.facing
 		
 	def check_game_won(self):
-		"""if no cheese tiles-> game is won"""
+		"""if no cheese tiles -> game is won"""
 		return (1 not in self.grid)
 
 	def move_entity(self,entity,action):

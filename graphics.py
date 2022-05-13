@@ -74,6 +74,7 @@ class PacGraphic:
 		x=(x)//CELL_DIM
 		y=(y)//CELL_DIM
 		return x,y
+
 	def grid_to_window(self,row,col): 
 		
 		x=col*CELL_DIM

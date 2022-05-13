@@ -96,6 +96,7 @@ def load_state_dict(agent,game):
 	print("model loaded")
 
 def write_record(record):
+	PATH = os.path.dirname(__file__)
 	model_folder_path = 'model'
 	file_name = os.path.join(PATH,model_folder_path,'record.txt')
 	with open(file_name, "w") as f:
