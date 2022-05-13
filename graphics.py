@@ -99,9 +99,10 @@ class PacGraphic:
 					entity.sprite_frame = ((entity.sprite_frame + 1) % 2)
 					entity.next_frame += 40
 
-	def draw_window(self,debug,reward):
+	def draw_window(self,debug,score):
 		self.WIN.fill((0, 0, 0))
 		self.WIN.blit(self.MAP, (0, 0))
+		self.draw_text("Score : " + str(score), self.font, (255, 255, 255), self.WIN, 10, 5)
 		
 		if debug:
 			self.draw_grid()
@@ -110,7 +111,7 @@ class PacGraphic:
 		
 		self.draw_coins()
 		self.draw_entities()
-		
+
 		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
 		pygame.display.update()
@@ -126,10 +127,9 @@ class PacGraphic:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//4)
 				if self.grid[row][column]==-1:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//2)
-	
-	
-	def draw_text(self,reward): #currently not used
-		if self.timer < 2.5:
-			ready_lbl = self.font.render(reward, True, YELLOW)
-			x,y=self.grid_to_window(row=19,col=10)
-			self.WIN.blit(ready_lbl,[x-6,y+6])
+
+	def draw_text(self,text, font, color, surface, x, y):
+		textobj = font.render(text, True, color)
+		textrect = textobj.get_rect()
+		textrect.topleft = (x, y)
+		surface.blit(textobj, textrect)

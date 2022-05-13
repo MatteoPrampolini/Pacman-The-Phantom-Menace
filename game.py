@@ -84,8 +84,10 @@ class Game():
 		self.graphics.get_entities(self.entities)
 		self.n_games=0
 		self.s= solver(self.grid)
-		mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
-		mixer.music.set_volume(0.2)
+		pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'game_start.wav'))
+		pygame.mixer.music.set_volume(0.05)
+		self.played_start = False
+		self.ready_image = pygame.image.load(os.path.join('Assets', 'ready.png'))
 		self.quit = False
 		self.reset()
 		
@@ -135,6 +137,7 @@ class Game():
 
 
 	def init_entities(self):
+		#PAC
 		pacman=Pacman(os.path.join('Assets', 'Pac_Sprites.png'),name="pacman")
 		x,y=self.graphics.grid_to_window(row=23,col=13)
 		rect_dim=16
@@ -620,10 +623,10 @@ class Game():
 			if self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]==1:
 				cheese_eaten=True
 				self.number_of_cheeese_eaten+=1
-				if mixer.music.get_busy():
-					mixer.music.queue(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
+				if pygame.mixer.music.get_busy():
+					pygame.mixer.music.queue(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
 				else:
-					mixer.music.play()
+					pygame.mixer.music.play()
 			self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]=0
 			
 		
@@ -665,6 +668,7 @@ class Game():
 			return Actions.UP
 		
 	def play_ghost(self):
+
 		self.graphics.frame_iteration+=1
 
 		pacman=self.entities[ENTITIES.PACMAN.value]
@@ -760,11 +764,25 @@ class Game():
 		if self.is_game_over:
 				reward=-10000
 				self.n_games+=1
+
 		if self.check_game_won():
 		
 			self.n_games+=1
 			self.is_game_over=1
-		self.graphics.draw_window(self.debug,str(reward))
+
+		self.graphics.draw_window(self.debug,self.score)
+
+		if self.played_start == False:
+			self.played_start = True
+			rect = self.ready_image.get_rect()
+			rect.center = (225,330)
+			self.graphics.WIN.blit(self.ready_image,rect)
+			pygame.display.update()
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy():
+				continue
+			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
+
 		return reward, self.is_game_over, self.score	
 	
 	def ghost_between_tile_pacman(self,ghost,tile_y,tile_x,i):
@@ -822,6 +840,7 @@ class Game():
 def main():
 
 	game= Game()
+
 	while game.quit == False:
 		check_for_events(game)
 		if not game.is_running:
@@ -853,8 +872,13 @@ def check_for_events(game):
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_p: #if P is pressed, toggle pause
 					game.is_running=not game.is_running
-				if event.key == pygame.K_m: #if M is pressed, toggle debug
+				if event.key == pygame.K_l: #if M is pressed, toggle debug
 					game.debug=not game.debug
+				if event.key == pygame.K_m:
+					if pygame.mixer.music.get_volume() != 0.0:
+						pygame.mixer.music.set_volume(0.0)
+					else:
+						pygame.mixer.music.set_volume(0.05)
 				
 				if event.key == pygame.K_r:
 					game.reset()
