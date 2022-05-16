@@ -8,7 +8,7 @@ import os
 mainClock = pygame.time.Clock()
 
 pygame.init()
-pygame.display.set_caption('game base')
+pygame.display.set_caption('Pacman')
 screen = pygame.display.set_mode((game.WIDTH, game.HEIGHT), 0, 32)
 
 font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),10)

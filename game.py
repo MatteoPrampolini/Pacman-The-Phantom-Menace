@@ -17,6 +17,8 @@ from pygame import mixer
 
 GHOST_SPEED=6
 
+
+
 class FACING(Enum):
 	NORTH = 0
 	SOUTH= 1
@@ -84,7 +86,6 @@ class Game():
 		self.graphics.get_entities(self.entities)
 		self.n_games=0
 		self.s= solver(self.grid)
-		pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'game_start.wav'))
 		pygame.mixer.music.set_volume(0.05)
 		self.played_start = False
 		self.ready_image = pygame.image.load(os.path.join('Assets', 'ready.png'))
@@ -624,7 +625,7 @@ class Game():
 				cheese_eaten=True
 				self.number_of_cheeese_eaten+=1
 				if pygame.mixer.music.get_busy():
-					pygame.mixer.music.queue(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
+					pygame.mixer.music.queue(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
 				else:
 					pygame.mixer.music.play()
 			self.grid[entity.pos_in_grid_y][entity.pos_in_grid_x]=0
@@ -692,6 +693,11 @@ class Game():
 		red=self.entities[1]
 		pink=self.entities[2]
 		if self.is_game_over:
+				pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'eat_fruit.wav'))
+				pygame.mixer.music.play()
+				while pygame.mixer.music.get_busy():
+					continue
+				pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
 				reward=-10000
 				self.n_games+=1
 				return reward, self.is_game_over, self.score
@@ -752,7 +758,22 @@ class Game():
 				reward+=20
 			elif self.exit_left==-1 and action in [Actions.RIGHT]:
 				reward+=20
-		cheese_eaten= self.move_entity(pacman,action)
+
+		if self.played_start == False:
+
+			self.played_start = True
+			self.graphics.draw_window(self.debug, self.score)
+			rect = self.ready_image.get_rect()
+			rect.center = (225,330)
+			self.graphics.WIN.blit(self.ready_image,rect)
+			pygame.display.update()
+			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'game_start.wav'))
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy():
+				continue
+			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
+
+		cheese_eaten = self.move_entity(pacman,action)
 		
 		self.cheese_top,self.cheese_left,dist=self.get_closest_cheese()
 
@@ -762,26 +783,24 @@ class Game():
 
 		self.check_game_over()
 		if self.is_game_over:
+				pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'eat_fruit.wav'))
+				pygame.mixer.music.play()
+				while pygame.mixer.music.get_busy():
+					continue
+				pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
 				reward=-10000
 				self.n_games+=1
 
 		if self.check_game_won():
-		
+			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'intermission.wav'))
+			pygame.mixer.music.play()
+			while pygame.mixer.music.get_busy():
+				continue
+			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
 			self.n_games+=1
 			self.is_game_over=1
 
 		self.graphics.draw_window(self.debug,self.score)
-
-		if self.played_start == False:
-			self.played_start = True
-			rect = self.ready_image.get_rect()
-			rect.center = (225,330)
-			self.graphics.WIN.blit(self.ready_image,rect)
-			pygame.display.update()
-			pygame.mixer.music.play()
-			while pygame.mixer.music.get_busy():
-				continue
-			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo.wav'))
 
 		return reward, self.is_game_over, self.score	
 	
@@ -836,6 +855,7 @@ class Game():
 		red=self.entities[ENTITIES.RED.value]
 		pink=self.entities[ENTITIES.PINK.value]
 		self.is_game_over= (pacman.pos_in_grid_y == red.pos_in_grid_y and pacman.pos_in_grid_x == red.pos_in_grid_x) or (pacman.pos_in_grid_y == pink.pos_in_grid_y and pacman.pos_in_grid_x == pink.pos_in_grid_x)
+
 	
 def main():
 
@@ -852,7 +872,7 @@ def main():
 		game.get_closest_safe_exit()
 		if game.is_game_over:
 			game.reset()
-		game.play_step(action) 
+		game.play_step(action)
 		game.play_ghost()
 
 		if game.is_game_over:
@@ -868,6 +888,16 @@ def check_for_events(game):
 			if event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					game.quit = True
+
+			if event.type == pygame.MOUSEBUTTONDOWN:
+				pos = pygame.mouse.get_pos()
+				if game.graphics.mute.collidepoint(pos):
+					if pygame.mixer.music.get_volume() != 0:
+						pygame.mixer.music.set_volume(0)
+					else:
+						pygame.mixer.music.set_volume(0.05)
+				if game.graphics.pause.collidepoint(pos):
+					game.is_running=not game.is_running
 
 			if event.type == pygame.KEYUP:
 				if event.key == pygame.K_p: #if P is pressed, toggle pause

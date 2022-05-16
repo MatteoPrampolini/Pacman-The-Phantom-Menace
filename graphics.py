@@ -26,6 +26,10 @@ class PacGraphic:
 		self.h=HEIGHT
 		self.WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 		self.MAP = pygame.image.load(os.path.join('Assets', 'map.png'))
+		self.muteicon = pygame.image.load(os.path.join('Assets', 'mute.png'))
+		self.mute = self.muteicon.get_rect()
+		self.pauseicon = pygame.image.load(os.path.join('Assets', 'pause.png'))
+		self.pause = self.pauseicon.get_rect()
 		self.entities=None
 		self.grid = None
 		self.font = pygame.font.Font(os.path.join('Assets', 'emulogic.ttf'),25)
@@ -75,8 +79,7 @@ class PacGraphic:
 		y=(y)//CELL_DIM
 		return x,y
 
-	def grid_to_window(self,row,col): 
-		
+	def grid_to_window(self,row,col):
 		x=col*CELL_DIM
 		y=row*CELL_DIM
 		return x,y
@@ -111,9 +114,11 @@ class PacGraphic:
 		
 		self.draw_coins()
 		self.draw_entities()
+		self.draw_icons()
 
 		self.clock.tick(self.FPS)
 		self.frame_iteration+=1
+
 		pygame.display.update()
 	
 	
@@ -127,6 +132,21 @@ class PacGraphic:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//4)
 				if self.grid[row][column]==-1:
 					pygame.draw.circle(self.WIN,COIN,(tmp.x+8,tmp.y+8),CELL_DIM//2)
+
+	def draw_icons(self):
+
+		if pygame.mixer.music.get_volume() != 0.0:
+			self.muteicon = pygame.image.load(os.path.join('Assets', 'mute.png'))
+		else:
+			self.muteicon = pygame.image.load(os.path.join('Assets', 'unmuted.png'))
+
+
+		self.mute.topleft = (400, 5)
+		self.WIN.blit(self.muteicon, self.mute)
+
+		self.pause.topleft = (self.mute.x-60, 5)
+		self.WIN.blit(self.pauseicon, self.pause)
+
 
 	def draw_text(self,text, font, color, surface, x, y):
 		textobj = font.render(text, True, color)
