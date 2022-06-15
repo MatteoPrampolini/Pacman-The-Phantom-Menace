@@ -44,7 +44,8 @@ class ENTITIES(Enum):
 
 pygame.font.init()	# text init
 pygame.mixer.init()	 # sound init
-
+pygame_icon = pygame.image.load('Assets/pac-tmp.png')
+pygame.display.set_icon(pygame_icon)
 WIDTH, HEIGHT = 448, 576
 pygame.display.set_caption("Pacman")
 #game settings
@@ -790,6 +791,8 @@ class Game():
 				pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'munch_lungo_abbassato.wav'))
 				reward=-10000
 				self.n_games+=1
+				self.n_games+=1
+				return reward, self.is_game_over, self.score
 
 		if self.check_game_won():
 			pygame.mixer.music.load(os.path.join('Assets', 'Sfx', 'intermission.wav'))
@@ -849,7 +852,7 @@ class Game():
 		return slice_of_bread>1
 
 	
- 
+
 	def check_game_over(self):
 		pacman=self.entities[ENTITIES.PACMAN.value]
 		red=self.entities[ENTITIES.RED.value]
